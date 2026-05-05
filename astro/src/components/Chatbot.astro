@@ -65,7 +65,7 @@ const t = useTranslations(lang);
             <button type="submit" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-fixed-dim transition-colors flex-shrink-0" aria-label={t('chat.send')}>
                 <span class="material-symbols-outlined text-sm">send</span>
             </button>
-            <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="dark" data-size="compact"></div>
+            <div id="chatbot-turnstile" class="cf-turnstile" data-theme="dark" data-size="compact"></div>
         </form>
         <p class="text-[10px] text-on-surface-variant mt-2 text-center">{t('chat.warning')}</p>
     </div>
@@ -74,7 +74,8 @@ const t = useTranslations(lang);
 <script is:inline define:vars={{
     errorServer: t('chat.error.server'),
     errorGeneral: t('chat.error.general'),
-    fallbackMsg: t('chat.fallback')
+    fallbackMsg: t('chat.fallback'),
+    turnstileSiteKey: turnstileKey
 }}>
     (function() {
         var toggleBtn = document.getElementById('chatbot-toggle');
@@ -91,6 +92,10 @@ const t = useTranslations(lang);
             chatWindow.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
             chatWindow.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
             input.focus();
+            var turnstileEl = document.getElementById('chatbot-turnstile');
+            if (turnstileEl && !turnstileEl.dataset.sitekey && window.turnstile && turnstileSiteKey) {
+                turnstile.render(turnstileEl, { sitekey: turnstileSiteKey, theme: 'dark', size: 'compact' });
+            }
         }
 
         function closeChat() {

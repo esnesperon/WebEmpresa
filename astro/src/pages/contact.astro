@@ -83,7 +83,7 @@ const errorText = t('contact.error');
                             <input type="text" name="website" tabindex="-1" autocomplete="off">
                         </div>
 
-                        <div class="cf-turnstile" data-sitekey={turnstileKey} id="turnstile-container"></div>
+                        <div id="turnstile-container"></div>
 
                         <div class="flex items-start gap-3 mt-4">
                             <input type="checkbox" id="contact-privacy" name="privacy" required class="mt-1 w-4 h-4 bg-transparent border border-outline-variant rounded focus:ring-primary text-primary" />
@@ -155,7 +155,11 @@ const errorText = t('contact.error');
 </div>
 </section>
 
-<script is:inline define:vars={{ sendingText, submitText, successText, errorText }}>
+<script is:inline define:vars={{ sendingText, submitText, successText, errorText, turnstileSiteKey: turnstileKey }}>
+        var turnstileWidgetId = null;
+        if (window.turnstile && turnstileSiteKey) {
+            turnstileWidgetId = turnstile.render('#turnstile-container', { sitekey: turnstileSiteKey });
+        }
         document.getElementById('contact-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('form-submit');
@@ -194,7 +198,7 @@ const errorText = t('contact.error');
                 if (response.ok) {
                     document.getElementById('form-success').classList.remove('hidden');
                     this.reset();
-                    if (window.turnstile) window.turnstile.reset();
+                    if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
                 } else {
                     throw new Error('Failed to send');
                 }

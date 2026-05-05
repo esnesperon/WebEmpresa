@@ -102,7 +102,7 @@ const categories = ['All', ...new Set(allPosts.map(p => p.data.category))];
                                 Suscribirme
                             </button>
                         </div>
-                        <div class="cf-turnstile mx-auto" data-sitekey={turnstileKey}></div>
+                        <div id="newsletter-turnstile" class="mx-auto"></div>
                     </form>
                     <p class="mt-4 text-sm text-on-surface-variant">Próximamente</p>
                 </div>
