@@ -113,16 +113,16 @@ const errText = t('blog.newsletter.err');
                 <div class="relative z-10 max-w-2xl mx-auto">
                     <h2 class="font-[Fraunces] text-3xl md:text-[48px] lg:text-[64px] bg-clip-text text-transparent bg-gradient-to-br from-white to-white/70 mb-6">{t('blog.newsletter.title')}</h2>
                     <p class="text-[18px] leading-[1.6] text-on-surface-variant mb-10">{t('blog.newsletter.desc')}</p>
-                    <form id="newsletter-form" class="flex flex-col gap-4 justify-center" data-webhook={newsletterWebhook}>
+                    <form id="newsletter-form" class="flex flex-col gap-4 justify-center opacity-50 pointer-events-none" data-webhook={newsletterWebhook}>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                            <input id="newsletter-email" class="bg-surface-container/50 border-b border-surface-container-highest focus:border-primary focus:ring-0 px-6 py-4 rounded-t-sm w-full sm:w-96 text-base text-on-surface placeholder-on-surface-variant transition-colors outline-none liquid-glass" placeholder={t('blog.newsletter.placeholder')} type="email" required />
-                            <button class="bg-primary text-on-primary px-8 py-4 rounded-sm text-xs uppercase tracking-widest font-semibold hover:bg-primary-fixed-dim transition-all active:scale-95 shadow-[0_0_20px_rgba(196,192,255,0.2)] whitespace-nowrap" type="submit">
+                            <input id="newsletter-email" class="bg-surface-container/50 border-b border-surface-container-highest focus:border-primary focus:ring-0 px-6 py-4 rounded-t-sm w-full sm:w-96 text-base text-on-surface placeholder-on-surface-variant transition-colors outline-none liquid-glass cursor-not-allowed" placeholder={t('blog.newsletter.placeholder')} type="email" required disabled />
+                            <button class="bg-primary text-on-primary px-8 py-4 rounded-sm text-xs uppercase tracking-widest font-semibold hover:bg-primary-fixed-dim transition-all active:scale-95 shadow-[0_0_20px_rgba(196,192,255,0.2)] whitespace-nowrap cursor-not-allowed" type="submit" disabled>
                                 {t('blog.newsletter.cta')}
                             </button>
                         </div>
                         <div class="cf-turnstile mx-auto" data-sitekey={turnstileKey}></div>
                     </form>
-                    <p id="newsletter-message" class="mt-4 text-sm hidden"></p>
+                    <p class="mt-4 text-sm text-on-surface-variant">{t('blog.newsletter.soon')}</p>
                 </div>
             </div>
         </section>

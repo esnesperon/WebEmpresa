@@ -2,6 +2,7 @@
 import { getLangFromUrl, useTranslations } from '../i18n/ui';
 import { Image } from 'astro:assets';
 const chatbotWebhook = import.meta.env.PUBLIC_N8N_CHATBOT_WEBHOOK || '';
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -59,10 +60,12 @@ const t = useTranslations(lang);
                 class="flex-1 bg-surface-container/50 border border-outline-variant/30 rounded-full px-4 py-2.5 text-sm text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary transition-colors"
                 placeholder={t('chat.placeholder')}
                 autocomplete="off"
+                name="message"
             />
             <button type="submit" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-fixed-dim transition-colors flex-shrink-0" aria-label={t('chat.send')}>
                 <span class="material-symbols-outlined text-sm">send</span>
             </button>
+            <div class="cf-turnstile" data-sitekey={turnstileKey} data-theme="dark" data-size="compact"></div>
         </form>
         <p class="text-[10px] text-on-surface-variant mt-2 text-center">{t('chat.warning')}</p>
     </div>
@@ -157,10 +160,13 @@ const t = useTranslations(lang);
             var typingId = addTyping();
 
             try {
+                var formData = new FormData(form);
+                var turnstileToken = formData.get('cf-turnstile-response') || '';
+
                 var res = await fetch(webhook, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text, timestamp: new Date().toISOString() })
+                    body: JSON.stringify({ message: text, timestamp: new Date().toISOString(), turnstileToken: turnstileToken })
                 });
 
                 removeTyping(typingId);
@@ -169,6 +175,7 @@ const t = useTranslations(lang);
                     var data = await res.json();
                     var reply = data.reply || data.message || data.response || fallbackMsg;
                     addMessage(reply, false);
+                    if (window.turnstile) window.turnstile.reset();
                 } else {
                     addMessage(errorGeneral, false);
                 }
