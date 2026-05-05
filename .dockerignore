@@ -9,4 +9,3 @@ astro/.astro
 .env
 .env.*
 .vscode
-astro/.env
