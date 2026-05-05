@@ -11,6 +11,7 @@ const t = useTranslations(lang);
 <button
     id="chatbot-toggle"
     data-webhook={chatbotWebhook}
+    data-turnstile-key={turnstileKey}
     class="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-primary text-on-primary shadow-[0_0_20px_rgba(196,192,255,0.3)] hover:shadow-[0_0_30px_rgba(196,192,255,0.5)] hover:scale-110 transition-all duration-300 flex items-center justify-center"
     aria-label={t('chat.open')}
     type="button"
@@ -74,8 +75,7 @@ const t = useTranslations(lang);
 <script is:inline define:vars={{
     errorServer: t('chat.error.server'),
     errorGeneral: t('chat.error.general'),
-    fallbackMsg: t('chat.fallback'),
-    turnstileSiteKey: turnstileKey
+    fallbackMsg: t('chat.fallback')
 }}>
     (function() {
         var toggleBtn = document.getElementById('chatbot-toggle');
@@ -85,6 +85,8 @@ const t = useTranslations(lang);
         var input = document.getElementById('chatbot-input');
         var messages = document.getElementById('chatbot-messages');
         var webhook = toggleBtn.dataset.webhook || '';
+        var turnstileKey = toggleBtn.dataset.turnstileKey || '';
+        var turnstileWidgetId = null;
         var isOpen = false;
 
         function openChat() {
@@ -93,8 +95,8 @@ const t = useTranslations(lang);
             chatWindow.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
             input.focus();
             var turnstileEl = document.getElementById('chatbot-turnstile');
-            if (turnstileEl && !turnstileEl.dataset.sitekey && window.turnstile && turnstileSiteKey) {
-                turnstile.render(turnstileEl, { sitekey: turnstileSiteKey, theme: 'dark', size: 'compact' });
+            if (turnstileEl && turnstileWidgetId === null && window.turnstile && turnstileKey) {
+                turnstileWidgetId = turnstile.render(turnstileEl, { sitekey: String(turnstileKey), theme: 'dark', size: 'compact' });
             }
         }
 
