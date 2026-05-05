@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useTranslations } from '../i18n/ui';
+import { getSeo } from '../i18n/seo';
+import phases from '../data/process-phases.json';
+
+const t = useTranslations('es');
+const seo = getSeo('es', 'process');
+
+const howToSteps = [
+    { name: 'Descubrimiento', text: 'Entendemos tu negocio, procesos y problema real. Definimos alcance, objetivos medibles y entregables.', url: 'https://orviq.net/process', image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2084&auto=format&fit=crop' },
+    { name: 'Propuesta y Acuerdo', text: 'Propuesta con alcance exacto, precio cerrado y plazo. Sin presupuestos vagos ni sorpresas.', url: 'https://orviq.net/process', image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2070&auto=format&fit=crop' },
+    { name: 'Diseño y Planificación', text: 'Diseñamos la estructura del sistema o interfaz y la validamos contigo antes de ejecutar.', url: 'https://orviq.net/process', image: 'https://images.unsplash.com/photo-1664575602276-acd073f104c1?q=80&w=2070&auto=format&fit=crop' },
+    { name: 'Desarrollo y Revisiones', text: 'Construimos en iteraciones con revisiones pactadas. Ves el progreso real antes del resultado final.', url: 'https://orviq.net/process', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop' },
+    { name: 'Entrega y Formación', text: 'Desplegamos en infraestructura propia UE con backups y monitorización. Formamos a tu equipo.', url: 'https://orviq.net/process', image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop' },
+    { name: 'Soporte y Evolución', text: 'Dos semanas de soporte post-lanzamiento incluidas. Acompañamiento mensual disponible.', url: 'https://orviq.net/process', image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=2070&auto=format&fit=crop' },
+];
+---
+
+<BaseLayout 
+    title={seo.title} 
+    description={seo.description} 
+    locale="es-ES" 
+    serviceArea={seo.serviceArea} 
+    tags={seo.keywords}
+    alternateLocales={[
+        { locale: 'en-US', url: 'https://orviq.net/en/process' },
+        { locale: 'fr-FR', url: 'https://orviq.net/fr/process' }
+    ]}
+    howTo={[{ name: 'Nuestro Proceso', description: 'Cómo trabajamos en Orviq: de la idea a la entrega.', totalTime: 'PT4W', steps: howToSteps }]}
+>
+    <header class="relative w-full h-[614px] flex items-center justify-center pt-32">
+        <div class="absolute inset-0 z-0 overflow-hidden">
+            <div class="absolute inset-0 bg-surface-container-lowest" data-alt="Dark, moody cinematic texture with slow moving subtle light leaks and deep shadows"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-background"></div>
+        </div>
+        <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+            <h1 class="font-[Fraunces] text-5xl md:text-7xl lg:text-[80px] leading-[1.1] tracking-[-0.02em] font-semibold text-on-background mb-6">{t('process.title')}</h1>
+            <p class="text-[18px] leading-[1.6] text-on-surface-variant max-w-2xl mx-auto">{t('process.desc')}</p>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-[120px] cinematic-fade-bottom z-10"></div>
+    </header>
+
+    <main class="relative z-20 w-full max-w-[1440px] mx-auto px-6 md:px-16 py-24">
+        <div class="relative">
+            <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent -translate-x-1/2"></div>
+
+            {phases.map((phase, i) => (
+                <div class:list={['relative flex flex-col md:flex-row items-center justify-between mb-32 group', i === phases.length - 1 && 'mb-0']}>
+                    {phase.order === 'right' ? (
+                        <>
+                            <div class="md:w-[45%] md:text-right pr-0 md:pr-12 mb-8 md:mb-0 order-2 md:order-1 ml-12 md:ml-0">
+                                <div class="liquid-glass rounded-xl p-8 transition-transform duration-700 hover:-translate-y-2">
+                                    <span class="text-xs text-primary mb-4 block uppercase tracking-widest font-semibold">{t('process.phase')} {phase.number}</span>
+                                    <h2 class="font-[Fraunces] text-2xl md:text-[32px] leading-[1.3] font-semibold text-on-background mb-4">{phase.es.title}</h2>
+                                    <p class="text-base leading-[1.6] text-on-surface-variant">{phase.es.description}</p>
+                                </div>
+                            </div>
+                            <div class="absolute left-4 md:left-1/2 w-12 h-12 bg-surface-container rounded-full border border-white/20 flex items-center justify-center -translate-x-1/2 z-10 shadow-[0_0_20px_rgba(196,192,255,0.2)]">
+                                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">{phase.icon}</span>
+                            </div>
+                            <div class="md:w-[45%] pl-0 md:pl-12 order-1 md:order-3 mb-8 md:mb-0 ml-12 md:ml-0">
+                                <div class="w-full h-64 rounded-xl overflow-hidden liquid-glass">
+                                    <div class="w-full h-full bg-cover bg-center opacity-60 mix-blend-luminosity hover:opacity-100 hover:mix-blend-normal transition-all duration-700" style={`background-image: url('${phase.image}');`}></div>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div class="md:w-[45%] pr-0 md:pr-12 order-1 md:order-1 mb-8 md:mb-0 ml-12 md:ml-0">
+                                <div class="w-full h-64 rounded-xl overflow-hidden liquid-glass">
+                                    <div class="w-full h-full bg-cover bg-center opacity-60 mix-blend-luminosity hover:opacity-100 hover:mix-blend-normal transition-all duration-700" style={`background-image: url('${phase.image}');`}></div>
+                                </div>
+                            </div>
+                            <div class="absolute left-4 md:left-1/2 w-12 h-12 bg-surface-container rounded-full border border-white/20 flex items-center justify-center -translate-x-1/2 z-10 shadow-[0_0_20px_rgba(196,192,255,0.2)]">
+                                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">{phase.icon}</span>
+                            </div>
+                                <div class="md:w-[45%] md:text-left pl-0 md:pl-12 mb-8 md:mb-0 order-2 md:order-3 ml-0 md:ml-0">
+
+                                <div class="liquid-glass rounded-xl p-8 transition-transform duration-700 hover:-translate-y-2">
+                                    <span class="text-xs text-primary mb-4 block uppercase tracking-widest font-semibold">{t('process.phase')} {phase.number}</span>
+                                    <h2 class="font-[Fraunces] text-2xl md:text-[32px] leading-[1.3] font-semibold text-on-background mb-4">{phase.es.title}</h2>
+                                    <p class="text-base leading-[1.6] text-on-surface-variant">{phase.es.description}</p>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
+            ))}
+        </div>
+    </main>
+</BaseLayout>

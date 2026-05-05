@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import OptimizedImage from '../../components/OptimizedImage.astro';
+import { getCollection, render } from 'astro:content';
+import { getLangFromUrl, useTranslations, getLocalizedPath } from '../../i18n/ui';
+
+export async function getStaticPaths() {
+    const posts = await getCollection('blog');
+    return posts.map(post => {
+        const lang = post.id.split('/')[0];
+        const slug = post.id.replace(`${lang}/`, '').replace('.md', '');
+        return {
+            params: { slug },
+            props: { post },
+        };
+    }).filter(p => p.props.post.id.startsWith('es/'));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const locale = lang === 'en' ? 'en-US' : lang === 'fr' ? 'fr-FR' : 'es-ES';
+const formattedDate = post.data.pubDate.toLocaleDateString(locale, {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+});
+---
+
+<BaseLayout
+    title={`${post.data.title} | Orviq Blog`}
+    description={post.data.description}
+    type="article"
+    publishedTime={post.data.pubDate}
+    modifiedTime={post.data.updatedDate ?? post.data.pubDate}
+    locale={locale}
+    breadcrumbs={[
+        { name: 'Inicio', url: 'https://orviq.net/' },
+        { name: 'Blog', url: 'https://orviq.net/blog' },
+        { name: post.data.title, url: `https://orviq.net/blog/${post.id.split('/')[1].replace('.md', '')}` },
+    ]}
+>
+    <main class="flex-grow pt-40 pb-24">
+        <article class="max-w-[1440px] mx-auto px-6 md:px-16" itemscope itemtype="https://schema.org/Article">
+            <!-- Breadcrumb -->
+            <nav class="mb-8 flex items-center gap-2 text-xs text-on-surface-variant uppercase tracking-widest" aria-label="Breadcrumb">
+                <a href="/" class="hover:text-primary transition-colors">Inicio</a>
+                <span>/</span>
+                <a href="/blog" class="hover:text-primary transition-colors">Blog</a>
+                <span>/</span>
+                <span class="text-on-background max-w-[200px] truncate">{post.data.title}</span>
+            </nav>
+
+            <!-- Hero Image -->
+            <div class="relative h-[400px] md:h-[600px] rounded-2xl overflow-hidden mb-16">
+<OptimizedImage src={post.data.image} alt={post.data.title} class="w-full h-full object-cover" itemprop="image" />
+                <div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 p-8 md:p-12">
+                    <span class="px-3 py-1 bg-primary/10 text-primary text-xs uppercase tracking-wider rounded backdrop-blur-md">{post.data.category}</span>
+                    <h1 class="font-[Fraunces] text-4xl md:text-6xl text-white mt-4 max-w-3xl" itemprop="headline">{post.data.title}</h1>
+                </div>
+            </div>
+
+            <!-- Article Meta -->
+            <div class="flex flex-wrap items-center gap-6 mb-12 text-on-surface-variant text-sm">
+                <span itemprop="datePublished" content={post.data.pubDate.toISOString()}>{formattedDate}</span>
+                <span class="w-1 h-1 rounded-full bg-on-surface-variant"></span>
+                <span>{post.data.readTime} de lectura</span>
+                <span class="w-1 h-1 rounded-full bg-on-surface-variant"></span>
+                <span itemprop="author" itemscope itemtype="https://schema.org/Organization">
+                    <span itemprop="name">Orviq Studio</span>
+                </span>
+            </div>
+
+            <!-- Article Content -->
+            <div class="max-w-3xl mx-auto prose prose-invert prose-lg" itemprop="articleBody">
+                <p class="text-xl text-on-surface-variant leading-relaxed mb-12 font-light">{post.data.description}</p>
+                <Content />
+            </div>
+
+            <!-- Tags -->
+            {post.data.tags && post.data.tags.length > 0 && (
+                <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-surface-container-high">
+                    <p class="text-xs text-on-surface-variant uppercase tracking-widest mb-4">Etiquetas</p>
+                    <div class="flex flex-wrap gap-2">
+                        {post.data.tags.map(tag => (
+                            <span class="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full" itemprop="keywords">{tag}</span>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <!-- Article Footer -->
+            <div class="max-w-3xl mx-auto mt-16 pt-8 border-t border-surface-container-high flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <a href="/blog" class="text-primary text-xs uppercase tracking-widest hover:text-white transition-colors">← Volver a todos los artículos</a>
+                <span class="text-xs text-on-surface-variant">
+                    {post.data.updatedDate ? `Actualizado: ${post.data.updatedDate.toLocaleDateString(locale, { month: 'long', day: 'numeric', year: 'numeric' })}` : `Publicado: ${formattedDate}`}
+                </span>
+            </div>
+        </article>
+    </main>
+</BaseLayout>

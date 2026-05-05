@@ -1,0 +1,19 @@
+{
+  "name": "Orviq",
+  "short_name": "Orviq",
+  "description": "Orviq — Automatización, desarrollo web e inteligencia artificial para empresas europeas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#131318",
+  "theme_color": "#0a0a0f",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

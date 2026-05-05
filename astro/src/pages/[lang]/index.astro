@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { useTranslations, getLocalizedPath, type Lang } from '../../i18n/ui';
+import { getSeo } from '../../i18n/seo';
+
+export function getStaticPaths() {
+    return [
+        { params: { lang: 'en' } },
+        { params: { lang: 'fr' } },
+    ];
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+const seo = getSeo(lang, 'home');
+const locale = lang === 'en' ? 'en-US' : lang === 'fr' ? 'fr-FR' : 'es-ES';
+---
+
+<BaseLayout
+    title={seo.title}
+    description={seo.description}
+    type="website"
+    serviceArea={seo.serviceArea}
+    tags={seo.keywords}
+    locale={locale}
+>
+    <link slot="head-assets" rel="preload" as="fetch" href="https://res.cloudinary.com/dhaww1w4e/video/upload/q_auto:best,vc_auto/v1777048461/0424_dvgv7p.mp4" crossorigin />
+    <link slot="head-assets" rel="preload" as="image" href="https://res.cloudinary.com/dhaww1w4e/video/upload/so_0,w_1920,h_1080,c_fill,q_auto,f_jpg/v1777048461/0424_dvgv7p.jpg" />
+    <!-- Hero Section -->
+    <header class="relative w-full h-[1000px] max-sm:h-[600px] flex items-center justify-center overflow-hidden fade-bottom">
+        <video
+            autoplay
+            class="absolute inset-0 w-full h-full object-cover opacity-60 blend-overlay"
+            loop
+            muted
+            playsinline
+            preload="auto"
+            fetchpriority="high"
+            poster="https://res.cloudinary.com/dhaww1w4e/video/upload/so_0,w_1920,h_1080,c_fill,q_auto,f_jpg/v1777048461/0424_dvgv7p.jpg"
+        >
+            <source src="https://res.cloudinary.com/dhaww1w4e/video/upload/q_auto:best,vc_auto/v1777048461/0424_dvgv7p.mp4" type="video/mp4" />
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
+        <div class="relative z-10 text-center max-w-4xl px-6 mx-auto">
+            <h1 class="font-display-xl text-display-xl text-white mb-8">
+                {t('index.hero.title')}
+            </h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-12">
+                {t('index.hero.desc')}
+            </p>
+        </div>
+    </header>
+
+    <!-- Start Section -->
+    <section class="relative py-32 max-sm:py-16 fade-top-bottom overflow-hidden min-h-[800px] max-sm:min-h-[500px] flex items-center">
+        <video
+            autoplay
+            class="absolute inset-0 w-full h-full object-cover opacity-30"
+            loop
+            muted
+            playsinline
+            preload="none"
+            poster="https://res.cloudinary.com/dhaww1w4e/video/upload/so_0,w_1920,h_1080,c_fill,q_auto,f_jpg/v1776969689/0422_ajgcxy.jpg"
+        >
+            <source src="https://res.cloudinary.com/dhaww1w4e/video/upload/q_auto:good,vc_auto/v1776969689/0422_ajgcxy.mp4" type="video/mp4" />
+        </video>
+        <div class="relative z-10 w-full max-w-max_width mx-auto px-6 sm:px-12 lg:px-16 text-center">
+            <h2 class="font-headline-lg text-headline-lg text-white mb-12">{t('index.section2.title')}</h2>
+            <a href={getLocalizedPath(lang, '/process')} class="liquid-glass-strong text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary/10 transition-colors duration-500 inline-block">
+                {t('index.section2.cta')}
+            </a>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="relative py-32 max-sm:py-16 fade-top-bottom overflow-hidden min-h-[800px] max-sm:min-h-[500px] flex items-center">
+        <video
+            autoplay
+            class="absolute inset-0 w-full h-full object-cover opacity-30 saturate-0"
+            loop
+            muted
+            playsinline
+            preload="none"
+            poster="https://res.cloudinary.com/dhaww1w4e/video/upload/so_0,w_1920,h_1080,c_fill,q_auto,f_jpg/v1776969675/0423_pih2j1.jpg"
+        >
+            <source src="https://res.cloudinary.com/dhaww1w4e/video/upload/q_auto:good,vc_auto/v1776969675/0423_pih2j1.mp4" type="video/mp4" />
+        </video>
+        <div class="relative z-10 w-full max-w-max_width mx-auto px-6 sm:px-12 lg:px-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center liquid-glass p-8 sm:p-12 lg:p-16 rounded-3xl mx-auto max-w-5xl">
+                <div class="flex flex-col gap-3 sm:gap-4">
+                    <div class="font-display-xl text-display-xl text-white">{t('index.stats.1.num')}</div>
+                    <div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">{t('index.stats.1.label')}</div>
+                    <div class="font-body-md text-body-md text-on-surface-variant">{t('index.stats.1.desc')}</div>
+                </div>
+                <div class="flex flex-col gap-3 sm:gap-4">
+                    <div class="font-display-xl text-display-xl text-white">{t('index.stats.2.num')}</div>
+                    <div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">{t('index.stats.2.label')}</div>
+                    <div class="font-body-md text-body-md text-on-surface-variant">{t('index.stats.2.desc')}</div>
+                </div>
+                <div class="flex flex-col gap-3 sm:gap-4">
+                    <div class="font-display-xl text-display-xl text-white">{t('index.stats.3.num')}</div>
+                    <div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">{t('index.stats.3.label')}</div>
+                    <div class="font-body-md text-body-md text-on-surface-variant">{t('index.stats.3.desc')}</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative pt-32 max-sm:pt-16 fade-top-bottom overflow-hidden flex flex-col justify-end min-h-[800px] max-sm:min-h-[500px]">
+        <video
+            autoplay
+            class="absolute inset-0 w-full h-full object-cover opacity-40"
+            loop
+            muted
+            playsinline
+            preload="none"
+            poster="https://res.cloudinary.com/dhaww1w4e/video/upload/so_0,w_1920,h_1080,c_fill,q_auto,f_jpg/v1776969652/Abstract_Liquid_Glass_Waves_Video_znscfv.jpg"
+        >
+            <source src="https://res.cloudinary.com/dhaww1w4e/video/upload/q_auto:good,vc_auto/v1776969652/Abstract_Liquid_Glass_Waves_Video_znscfv.mp4" type="video/mp4" />
+        </video>
+        <div class="relative z-10 w-full max-w-max_width mx-auto px-6 sm:px-12 lg:px-16 text-center flex-grow flex flex-col items-center justify-center">
+            <h2 class="font-headline-lg text-headline-lg text-white mb-12 max-w-3xl mx-auto">
+                {t('index.cta.title')}
+            </h2>
+            <a href={getLocalizedPath(lang, '/contact')} class="liquid-glass-strong text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary/20 transition-colors duration-500 inline-block">
+                {t('index.cta.btn')}
+            </a>
+        </div>
+    </section>
+</BaseLayout>

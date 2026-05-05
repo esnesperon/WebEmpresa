@@ -1,0 +1,114 @@
+# Orviq Studio — Extended LLMs Context File
+# https://orviq.net/llms-full.txt
+# Comprehensive information for Large Language Models and AI search engines.
+# Learn more: https://llmstxt.org
+
+## Organization
+
+**Name:** Orviq
+**Legal Form:** Digital agency / technology studio
+**Founded:** 2024
+**Location:** Spain / European Union (fully remote operations)
+**Website:** https://orviq.net
+**Languages:** Spanish (primary), English, French
+**Email:** orviq.contact@gmail.com
+
+**Social Profiles:**
+- X (Twitter): https://x.com/orviq
+- Instagram: https://www.instagram.com/orviqstudio
+- TikTok: https://www.tiktok.com/@orviq
+- GitHub: https://github.com/orviq
+- LinkedIn: https://www.linkedin.com/company/orviq
+- YouTube: https://www.youtube.com/@orviq
+
+**Brand Voice:** Premium, minimal, cinematic, confident, multilingual.
+
+**Core Values:**
+- No fluff, just real results.
+- Everything built belongs to the client (100% ownership).
+- Fixed price and defined timeline before starting (0 surprises).
+- European infrastructure, GDPR compliant from day one.
+- No vendor lock-in or technical dependency created.
+
+## What We Do
+
+Orviq is a digital agency focused on process automation, professional web development, and bespoke AI solutions. We build systems that help businesses scale efficiently without overcomplicating their workflows.
+
+We serve SMEs, startups, and visionary entrepreneurs across Spain and the European Union.
+
+## Services
+
+1. **Process Automation (n8n & AI)**
+   Design and implementation of automated workflows connecting your tools and processes. Operations run autonomously without manual intervention.
+
+2. **Professional Websites**
+   Fast, secure, custom-designed websites with technical SEO from day one. Hosted on own EU infrastructure. No unnecessary plugin dependencies.
+
+3. **RAG & Private AI**
+   AI systems that consult and reason over your own documents. Ask questions in natural language and get precise answers with source references. Data stays in your environment.
+
+4. **Autonomous AI Agents**
+   Intelligent assistants that handle enquiries, qualify clients, and take real actions 24/7 without supervision. Understand context and act accordingly.
+
+5. **E-commerce / Online Stores**
+   Complete e-commerce with catalogue, payments, order management, and integrations. Platform adapted to the project, not the other way around.
+
+6. **Branding & Identity**
+   Brand building from strategy: positioning, audience definition, visual identity, logo, brand guidelines, and templates.
+
+7. **SaaS Dashboards**
+   Custom management dashboards hosted on your own server. Centralise information in an interface designed for your workflow.
+
+8. **Custom App / SaaS**
+   Complete digital product development from concept validation to production-ready platform.
+
+9. **Scrapers & Bots**
+   Automated external data collection, real-time alerts, and information pipelines.
+
+10. **DevOps & Infrastructure**
+    Configuration, deployment, and maintenance of own infrastructure on European servers. Full control, privacy, no dependency on large cloud platforms.
+
+11. **Technology Consulting**
+    Digital audit, technology strategy, and support in decisions with lasting consequences. Strategic vision with real execution capability.
+
+## How We Work
+
+Our process is structured and transparent, from first contact to post-launch support:
+
+- **Phase 1 — Discovery:** We understand your problem, context, and constraints.
+- **Phase 2 — Scope & Strategy:** We define what will be built, what it will cost, and how long it will take.
+- **Phase 3 — Design & Architecture:** We design the solution and validate it with you before writing code.
+- **Phase 4 — Development:** We build with iterative reviews and clear milestones.
+- **Phase 5 — Delivery & Launch:** We deploy, test, and hand over documentation and access.
+- **Phase 6 — Support:** Post-launch support period included; optional ongoing maintenance.
+
+## Key Differentiators
+
+- **100% Yours:** Everything we build — code, automations, designs, configurations — belongs to you from day one.
+- **EU Infrastructure:** Servers located in Europe. GDPR compliant. No data sent to third parties without explicit consent.
+- **Fixed Pricing:** Price closed and timeline defined before starting. No surprises.
+- **No Lock-in:** Complete documentation delivered. Any developer can continue our work.
+- **Remote-First:** Distributed team serving clients across Spain and Europe.
+
+## Frequently Asked Questions
+
+Q: What type of companies do you work with?
+A: Freelancers, small and medium businesses needing real technical solutions without big-agency costs. Also companies with internal teams needing extra capacity.
+
+Q: How is pricing defined?
+A: Fixed price for defined scope, monthly retainer for ongoing projects, or hourly for consulting. Free quote within 48 hours.
+
+Q: Do you offer maintenance?
+A: Yes. All projects include a post-launch support period. Optional monthly maintenance available.
+
+Q: Is my data safe?
+A: Yes. European servers, GDPR compliant. For sensitive sectors we design fully isolated architectures where no data leaves your environment.
+
+Q: Can I change provider after working with you?
+A: Always. You own everything. We deliver full documentation so anyone can continue.
+
+## Contact
+
+To start a project or request a quote, visit https://orviq.net/contact or email orviq.contact@gmail.com.
+
+We typically respond within 24 hours.

@@ -1,0 +1,211 @@
+[
+    {
+        "id": "automatizacion",
+        "icon": "account_tree",
+        "color": "primary",
+        "span": "md:col-span-8",
+        "height": "min-h-[480px]",
+        "es": {
+            "title": "Automatización\n& Flujos de trabajo",
+            "description": "Diseñamos e implantamos flujos automatizados que conectan tus herramientas y procesos. Tus operaciones funcionan solas, sin errores ni intervención manual, mientras tú te dedicas a lo que importa."
+        },
+        "en": {
+            "title": "Automation\n& Workflows",
+            "description": "We design and implement automated workflows that connect your tools and processes. Your operations run on their own, without errors or manual intervention, while you focus on what matters."
+        },
+        "fr": {
+            "title": "Automatisation\n& Flux de travail",
+            "description": "Nous concevons et mettons en œuvre des flux de travail automatisés qui connectent vos outils et processus. Vos opérations fonctionnent seules, sans erreurs ni intervention manuelle."
+        }
+    },
+    {
+        "id": "web",
+        "icon": "language",
+        "color": "secondary",
+        "span": "md:col-span-4",
+        "height": "min-h-[480px]",
+        "es": {
+            "title": "Web\nProfesional",
+            "description": "Sitios web rápidos, seguros y diseñados a medida. Sin dependencias innecesarias, con SEO técnico desde el primer día y alojados en infraestructura propia dentro de la UE."
+        },
+        "en": {
+            "title": "Professional\nWebsite",
+            "description": "Fast, secure, custom-designed websites. No unnecessary dependencies, technical SEO from day one and hosted on own EU infrastructure."
+        },
+        "fr": {
+            "title": "Site Web\nProfessionnel",
+            "description": "Sites web rapides, sécurisés et conçus sur mesure. Sans dépendances inutiles, avec un SEO technique dès le premier jour et hébergés sur notre infrastructure européenne."
+        }
+    },
+    {
+        "id": "rag",
+        "icon": "psychology",
+        "color": "tertiary",
+        "span": "md:col-span-4",
+        "height": "min-h-[320px]",
+        "es": {
+            "title": "IA sobre tus\npropios datos",
+            "description": "Sistemas de inteligencia artificial que consultan y razonan sobre tu propia información. Tus datos permanecen en tu infraestructura, bajo tu control total."
+        },
+        "en": {
+            "title": "AI on your\nown data",
+            "description": "AI systems that consult and reason over your own information. Your data stays in your infrastructure, under your total control."
+        },
+        "fr": {
+            "title": "IA sur vos\npropres données",
+            "description": "Systèmes d'intelligence artificielle qui consultent et raisonnent sur vos propres informations. Vos données restent dans votre infrastructure, sous votre contrôle total."
+        }
+    },
+    {
+        "id": "agente",
+        "icon": "smart_toy",
+        "color": "primary",
+        "span": "md:col-span-4",
+        "height": "min-h-[320px]",
+        "es": {
+            "title": "Agente IA\nAutónomo",
+            "description": "Asistentes inteligentes que atienden consultas, cualifican clientes y toman acciones reales sin intervención humana, disponibles 24/7."
+        },
+        "en": {
+            "title": "Autonomous\nAI Agent",
+            "description": "Intelligent assistants that handle enquiries, qualify clients and take real actions without human intervention, available 24/7."
+        },
+        "fr": {
+            "title": "Agent IA\nAutonome",
+            "description": "Assistants intelligents qui gèrent les demandes, qualifient les clients et prennent des actions réelles sans intervention humaine, disponibles 24h/24."
+        }
+    },
+    {
+        "id": "ecom",
+        "icon": "shopping_cart",
+        "color": "secondary",
+        "span": "md:col-span-4",
+        "height": "min-h-[320px]",
+        "es": {
+            "title": "Tienda\nOnline",
+            "description": "E-commerce completo: catálogo, pagos, gestión de pedidos e integraciones con tus operaciones. Adaptamos la plataforma al proyecto."
+        },
+        "en": {
+            "title": "Online\nStore",
+            "description": "Complete e-commerce: catalogue, payments, order management and integrations with your operations. We adapt the platform to the project."
+        },
+        "fr": {
+            "title": "Boutique\nen ligne",
+            "description": "E-commerce complet : catalogue, paiements, gestion des commandes et intégrations avec vos opérations. Nous adaptons la plateforme au projet."
+        }
+    },
+    {
+        "id": "branding",
+        "icon": "palette",
+        "color": "tertiary",
+        "span": "md:col-span-4",
+        "height": "min-h-[320px]",
+        "es": {
+            "title": "Branding\n& Identidad",
+            "description": "Construcción de marca desde la estrategia. Empezamos por el posicionamiento y la audiencia, llegando a la identidad visual como consecuencia coherente."
+        },
+        "en": {
+            "title": "Branding\n& Identity",
+            "description": "Brand building from strategy. We start with positioning and audience, arriving at visual identity as a coherent result."
+        },
+        "fr": {
+            "title": "Branding\n& Identité",
+            "description": "Construction de marque à partir de la stratégie. Nous commençons par le positionnement et l'audience, arrivant à l'identité visuelle comme conséquence cohérente."
+        }
+    },
+    {
+        "id": "saas",
+        "icon": "dashboard",
+        "color": "primary",
+        "span": "md:col-span-6",
+        "height": "min-h-[300px]",
+        "es": {
+            "title": "Dashboard\nSaaS",
+            "description": "Panel de control a medida alojado en tu propio servidor. Centraliza la información que más usas en una interfaz diseñada para tu flujo de trabajo."
+        },
+        "en": {
+            "title": "SaaS\nDashboard",
+            "description": "Custom management dashboard hosted on your own server. Centralise the information you use most in an interface designed for your workflow."
+        },
+        "fr": {
+            "title": "Dashboard\nSaaS",
+            "description": "Tableau de bord de gestion personnalisé hébergé sur votre propre serveur. Centralisez les informations que vous utilisez le plus dans une interface conçue pour votre flux de travail."
+        }
+    },
+    {
+        "id": "app",
+        "icon": "apps",
+        "color": "secondary",
+        "span": "md:col-span-6",
+        "height": "min-h-[300px]",
+        "es": {
+            "title": "App / SaaS\na Medida",
+            "description": "Desarrollo de producto digital completo: desde la validación del concepto hasta una plataforma lista para operar en producción y escalar."
+        },
+        "en": {
+            "title": "Custom App\n/ SaaS",
+            "description": "Complete digital product development: from concept validation to a platform ready to operate in production and scale."
+        },
+        "fr": {
+            "title": "App / SaaS\nsur Mesure",
+            "description": "Développement de produit numérique complet : de la validation du concept à une plateforme prête à fonctionner en production et à évoluer."
+        }
+    },
+    {
+        "id": "scraper",
+        "icon": "manage_search",
+        "color": "tertiary",
+        "span": "md:col-span-4",
+        "height": "min-h-[280px]",
+        "es": {
+            "title": "Scraper\n& Bot",
+            "description": "Automatización de la recolección de datos externos, alertas en tiempo real y pipelines de información."
+        },
+        "en": {
+            "title": "Scraper\n& Bot",
+            "description": "Automation of external data collection, real-time alerts and information pipelines."
+        },
+        "fr": {
+            "title": "Scraper\n& Bot",
+            "description": "Automatisation de la collecte de données externes, alertes en temps réel et pipelines d'information."
+        }
+    },
+    {
+        "id": "devops",
+        "icon": "cloud_sync",
+        "color": "primary",
+        "span": "md:col-span-4",
+        "height": "min-h-[280px]",
+        "es": {
+            "title": "DevOps\n& Infraestructura",
+            "description": "Configuración, despliegue y mantenimiento de infraestructura propia en servidores europeos. Control total, privacidad y sin dependencias de grandes plataformas cloud."
+        },
+        "en": {
+            "title": "DevOps\n& Infrastructure",
+            "description": "Configuration, deployment and maintenance of own infrastructure on European servers. Full control, privacy and no dependency on large cloud platforms."
+        },
+        "fr": {
+            "title": "DevOps\n& Infrastructure",
+            "description": "Configuration, déploiement et maintenance d'infrastructure propre sur des serveurs européens. Contrôle total, confidentialité et sans dépendance aux grandes plateformes cloud."
+        }
+    },
+    {
+        "id": "consulting",
+        "icon": "hub",
+        "color": "secondary",
+        "span": "md:col-span-4",
+        "height": "min-h-[280px]",
+        "es": {
+            "title": "Consultoría\nTecnológica",
+            "description": "Auditoría digital, estrategia tecnológica y acompañamiento en decisiones con consecuencias duraderas. Visión estratégica con capacidad de ejecución real."
+        },
+        "en": {
+            "title": "Technology\nConsulting",
+            "description": "Digital audit, technology strategy and support in decisions with lasting consequences. Strategic vision with real execution capability."
+        },
+        "fr": {
+            "title": "Conseil\nTechnologique",
+            "description": "Audit numérique, stratégie technologique et accompagnement dans les décisions à conséquences durables. Vision stratégique avec capacité d'exécution réelle."
+        }
+    }
+]

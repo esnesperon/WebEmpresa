@@ -1,0 +1,23 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+  loading?: 'eager' | 'lazy';
+  decoding?: 'async' | 'sync' | 'auto';
+  sizes?: string;
+}
+
+const { src, alt, class: className = '', loading = 'lazy', decoding = 'async', sizes = '(max-width: 768px) 100vw, 50vw' } = Astro.props;
+
+function getSrcset(url: string) {
+  if (!url.includes('unsplash.com')) return undefined;
+  const base = url.replace(/[?&]w=\d+/g, '').replace(/\?$/, '');
+  const sep = base.includes('?') ? '&' : '?';
+  return `${base}${sep}w=400 400w, ${base}${sep}w=800 800w, ${base}${sep}w=1200 1200w, ${base}${sep}w=1600 1600w`;
+}
+
+const srcset = getSrcset(src);
+---
+
+<img src={src} alt={alt} class={className} loading={loading} decoding={decoding} srcset={srcset} sizes={sizes} />

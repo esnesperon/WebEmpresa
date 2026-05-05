@@ -1,0 +1,78 @@
+{
+    "studioName": "Orviq",
+    "address": "",
+    "city": "",
+    "email": "orviq.contact@gmail.com",
+    "socials": [
+        {
+            "name": "X",
+            "label": "X (antes Twitter)",
+            "handle": "@orviq",
+            "url": "https://x.com/orviq",
+            "icon": "x"
+        },
+        {
+            "name": "Instagram",
+            "label": "Instagram",
+            "handle": "@orviqstudio",
+            "url": "https://instagram.com/orviqstudio",
+            "icon": "instagram"
+        },
+        {
+            "name": "TikTok",
+            "label": "TikTok",
+            "handle": "@orviq",
+            "url": "https://tiktok.com/@orviq",
+            "icon": "tiktok"
+        },
+        {
+            "name": "GitHub",
+            "label": "GitHub",
+            "handle": "orviq",
+            "url": "https://github.com/orviq",
+            "icon": "github"
+        },
+        {
+            "name": "LinkedIn",
+            "label": "LinkedIn",
+            "handle": "Orviq",
+            "url": "https://linkedin.com/company/orviq",
+            "icon": "linkedin"
+        },
+        {
+            "name": "YouTube",
+            "label": "YouTube",
+            "handle": "@orviq",
+            "url": "https://youtube.com/@orviq",
+            "icon": "youtube"
+        }
+    ],
+    "faqPreview": [
+        {
+            "question": "¿Cuánto tarda un proyecto?",
+            "answer": "Depende del alcance. Los proyectos más acotados pueden estar listos en días; los más complejos, en semanas. Te damos el plazo exacto antes de empezar."
+        },
+        {
+            "question": "¿Mis datos están seguros con vosotros?",
+            "answer": "Trabajamos con infraestructura propia en servidores europeos. Tus datos y los de tus clientes no salen de tu entorno sin tu consentimiento explícito."
+        }
+    ],
+    "inquiryTypes": [
+        {
+            "value": "project",
+            "label": "Nuevo proyecto"
+        },
+        {
+            "value": "press",
+            "label": "Prensa y medios"
+        },
+        {
+            "value": "careers",
+            "label": "Trabaja con nosotros"
+        },
+        {
+            "value": "other",
+            "label": "Consulta general"
+        }
+    ]
+}

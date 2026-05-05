@@ -1,0 +1,14 @@
+services:
+  orviq-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: orviq-web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

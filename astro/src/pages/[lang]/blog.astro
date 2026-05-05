@@ -1,0 +1,214 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { useTranslations, getLocalizedPath, type Lang } from '../../i18n/ui';
+import { getSeo } from '../../i18n/seo';
+
+export function getStaticPaths() {
+    return [
+        { params: { lang: 'en' } },
+        { params: { lang: 'fr' } },
+    ];
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+const seo = getSeo(lang, 'blog');
+const locale = lang === 'en' ? 'en-US' : lang === 'fr' ? 'fr-FR' : 'es-ES';
+
+const newsletterWebhook = import.meta.env.PUBLIC_N8N_NEWSLETTER_WEBHOOK || '';
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+
+const allPostsRaw = await getCollection('blog');
+const allPosts = allPostsRaw.filter(p => p.id.startsWith(`${lang}/`));
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const featuredPost = sortedPosts.find(p => p.data.featured);
+const regularPosts = sortedPosts.filter(p => !p.data.featured);
+
+const categories = ['All', ...new Set(allPosts.map(p => p.data.category))];
+
+const sendingText = t('blog.newsletter.cta');
+const okText = t('blog.newsletter.ok');
+const errText = t('blog.newsletter.err');
+---
+
+<BaseLayout title={seo.title} description={seo.description} locale={locale} serviceArea={seo.serviceArea} tags={seo.keywords}>
+    <main class="flex-grow pt-24 relative z-10">
+        {featuredPost && (
+        <section class="relative min-h-[500px] md:h-[819px] flex items-end pb-16 cinematic-fade-bottom">
+            <div class="absolute inset-0 z-0">
+                <img alt={featuredPost.data.title} class="w-full h-full object-cover opacity-60 mix-blend-screen" src={featuredPost.data.image} />
+                <div class="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
+            </div>
+            <div class="max-w-[1440px] mx-auto px-6 md:px-16 w-full relative z-10">
+                <a href={getLocalizedPath(lang, `/blog/${featuredPost.id.split('/')[1].replace('.md', '')}`)} class="block liquid-glass-strong p-6 md:p-12 rounded-lg max-w-4xl border-l-4 border-l-primary hover:shadow-[0_0_40px_rgba(196,192,255,0.15)] transition-shadow">
+                    <div class="flex flex-wrap items-center gap-4 mb-6">
+                        <span class="px-3 py-1 rounded-sm bg-primary/20 text-primary text-xs uppercase tracking-widest border border-primary/30">{featuredPost.data.category}</span>
+                        <span class="text-on-surface-variant text-xs uppercase tracking-widest">{featuredPost.data.readTime}</span>
+                    </div>
+                    <h1 class="font-[Fraunces] text-4xl md:text-6xl lg:text-[80px] leading-[1.1] tracking-[-0.02em] font-semibold bg-clip-text text-transparent bg-gradient-to-br from-white to-white/70 mb-6">{featuredPost.data.title}</h1>
+                    <p class="text-[18px] leading-[1.6] text-on-surface-variant mb-8 max-w-2xl">{featuredPost.data.description}</p>
+                    <div class="flex items-center gap-2 text-primary group">
+                        <span class="text-xs uppercase tracking-widest font-semibold">{t('blog.readArticle')}</span>
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+        )}
+
+        <section class="py-24 max-w-[1440px] mx-auto px-6 md:px-16 relative">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 border-b border-surface-container-high pb-8 gap-6">
+                <div>
+                    <h2 class="font-[Fraunces] text-3xl md:text-[48px] leading-[1.2] font-semibold text-on-background mb-2">{t('blog.title')}</h2>
+                    <p class="text-base leading-[1.6] text-on-surface-variant">{t('blog.desc')}</p>
+                </div>
+                <div class="hidden md:flex gap-2 lg:gap-4 overflow-x-auto pb-2 max-w-full flex-wrap lg:flex-nowrap" id="category-filters">
+                    {categories.map((cat, i) => (
+                        <button data-category={cat} class:list={[
+                            'category-btn px-4 py-2 rounded-sm text-xs uppercase tracking-widest font-semibold transition-colors',
+                            i === 0 ? 'bg-surface-container-highest text-on-surface border border-outline-variant hover:bg-surface-bright' : 'bg-transparent text-on-surface-variant hover:text-on-surface'
+                        ]}>
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="posts-grid">
+                {regularPosts.map((post, i) => (
+                    <article class="post-card liquid-glass rounded-lg overflow-hidden group hover:shadow-[0_0_30px_rgba(196,192,255,0.15)] transition-all duration-500 cursor-pointer flex flex-col h-full border-t border-l border-white/10" data-category={post.data.category} style={i >= 3 ? 'display: none;' : 'display: flex;'}>
+                        <a href={getLocalizedPath(lang, `/blog/${post.id.split('/')[1].replace('.md', '')}`)} class="block flex flex-col h-full">
+                            <div class="relative h-64 overflow-hidden">
+                                <img alt={post.data.title} loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-80 mix-blend-luminosity group-hover:mix-blend-normal" src={post.data.image} />
+                                <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent opacity-80"></div>
+                                <div class="absolute top-4 left-4">
+                                    <span class="px-2 py-1 rounded-sm bg-background/80 backdrop-blur-md text-primary text-[10px] uppercase tracking-widest border border-white/10">{post.data.category}</span>
+                                </div>
+                            </div>
+                            <div class="p-8 flex-grow flex flex-col">
+                                <h3 class="font-[Fraunces] text-[24px] leading-snug text-on-surface mb-4 group-hover:text-primary transition-colors">{post.data.title}</h3>
+                                <p class="text-base leading-[1.6] text-on-surface-variant mb-6 line-clamp-3 flex-grow">{post.data.description}</p>
+                                <div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-container-high">
+                                    <span class="text-[10px] text-on-surface-variant tracking-widest uppercase font-semibold">{post.data.pubDate.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()}</span>
+                                    <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">north_east</span>
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+                ))}
+            </div>
+
+            <div class="mt-16 flex justify-center" id="load-more-container">
+                <button id="load-more-btn" class="liquid-glass px-8 py-4 rounded-sm text-xs uppercase tracking-widest font-semibold text-on-surface hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+                    {t('blog.loadMore')} <span class="material-symbols-outlined text-sm">expand_more</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="py-24 max-w-[1440px] mx-auto px-6 md:px-16 relative z-10">
+            <div class="liquid-glass-strong rounded-xl p-8 md:p-20 text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-50"></div>
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <h2 class="font-[Fraunces] text-3xl md:text-[48px] lg:text-[64px] bg-clip-text text-transparent bg-gradient-to-br from-white to-white/70 mb-6">{t('blog.newsletter.title')}</h2>
+                    <p class="text-[18px] leading-[1.6] text-on-surface-variant mb-10">{t('blog.newsletter.desc')}</p>
+                    <form id="newsletter-form" class="flex flex-col gap-4 justify-center" data-webhook={newsletterWebhook}>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <input id="newsletter-email" class="bg-surface-container/50 border-b border-surface-container-highest focus:border-primary focus:ring-0 px-6 py-4 rounded-t-sm w-full sm:w-96 text-base text-on-surface placeholder-on-surface-variant transition-colors outline-none liquid-glass" placeholder={t('blog.newsletter.placeholder')} type="email" required />
+                            <button class="bg-primary text-on-primary px-8 py-4 rounded-sm text-xs uppercase tracking-widest font-semibold hover:bg-primary-fixed-dim transition-all active:scale-95 shadow-[0_0_20px_rgba(196,192,255,0.2)] whitespace-nowrap" type="submit">
+                                {t('blog.newsletter.cta')}
+                            </button>
+                        </div>
+                        <div class="cf-turnstile mx-auto" data-sitekey={turnstileKey}></div>
+                    </form>
+                    <p id="newsletter-message" class="mt-4 text-sm hidden"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script is:inline define:vars={{ okText, errText }}>
+        const filterBtns = document.querySelectorAll('.category-btn');
+        const postCards = document.querySelectorAll('.post-card');
+        let visibleCount = 3;
+        const postsPerLoad = 3;
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.dataset.category;
+                visibleCount = 3;
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-surface-container-highest', 'text-on-surface', 'border', 'border-outline-variant');
+                    b.classList.add('bg-transparent', 'text-on-surface-variant');
+                });
+                btn.classList.remove('bg-transparent', 'text-on-surface-variant');
+                btn.classList.add('bg-surface-container-highest', 'text-on-surface', 'border', 'border-outline-variant');
+                let matchCount = 0;
+                postCards.forEach(card => {
+                    if (category === 'All' || card.dataset.category === category) {
+                        matchCount++;
+                        card.style.display = matchCount <= visibleCount ? 'flex' : 'none';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                const loadMoreContainer = document.getElementById('load-more-container');
+                loadMoreContainer.style.display = matchCount > visibleCount ? 'flex' : 'none';
+            });
+        });
+
+        document.getElementById('load-more-btn').addEventListener('click', () => {
+            const activeCategory = document.querySelector('.category-btn.bg-surface-container-highest')?.dataset.category || 'All';
+            visibleCount += postsPerLoad;
+            let matchCount = 0;
+            postCards.forEach(card => {
+                if (activeCategory === 'All' || card.dataset.category === activeCategory) {
+                    matchCount++;
+                    if (matchCount <= visibleCount) card.style.display = 'flex';
+                }
+            });
+            if (matchCount <= visibleCount) document.getElementById('load-more-container').style.display = 'none';
+        });
+
+        document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
+            const messageEl = document.getElementById('newsletter-message');
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+
+            try {
+                const formData = new FormData(e.target);
+                const turnstileToken = formData.get('cf-turnstile-response');
+
+                const response = await fetch(e.target.dataset.webhook || '', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email, 
+                        timestamp: new Date().toISOString(), 
+                        source: window.location.href,
+                        turnstileToken 
+                    })
+                });
+                if (response.ok) {
+                    messageEl.textContent = okText;
+                    messageEl.className = 'mt-4 text-sm text-secondary';
+                    document.getElementById('newsletter-email').value = '';
+                    if (window.turnstile) window.turnstile.reset();
+                } else {
+                    throw new Error('Failed');
+                }
+            } catch (err) {
+                messageEl.textContent = errText;
+                messageEl.className = 'mt-4 text-sm text-error';
+            } finally {
+                messageEl.classList.remove('hidden');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</BaseLayout>

@@ -1,0 +1,59 @@
+# Orviq Studio — LLMs hint file
+# https://orviq.net/llms.txt
+# This file helps Large Language Models understand who we are and what we do.
+# Learn more: https://llmstxt.org
+
+# Organization
+name: Orviq
+url: https://orviq.net
+description: >
+  Orviq is a digital agency focused on process automation, professional web development,
+  and bespoke AI solutions. We build systems that help businesses scale efficiently
+  without overcomplicating their workflows. No fluff, just real results.
+
+# Services
+services:
+  - Process Automation (n8n & AI)
+  - Professional Websites
+  - RAG & Private AI
+  - Autonomous AI Agents
+  - E-commerce / Online Stores
+  - Branding & Identity
+  - SaaS Dashboards
+  - Custom App / SaaS
+  - Scrapers & Bots
+  - DevOps & Infrastructure
+  - Technology Consulting
+
+# Contact
+email: orviq.contact@gmail.com
+socials:
+  x:         https://x.com/orviq
+  instagram: https://www.instagram.com/orviqstudio
+  tiktok:    https://www.tiktok.com/@orviq
+  github:    https://github.com/orviq
+  linkedin:  https://www.linkedin.com/company/orviq
+  youtube:   https://www.youtube.com/@orviq
+
+# Key pages
+pages:
+  - url: https://orviq.net/
+    description: Homepage — cinematic hero, stats, and CTA
+  - url: https://orviq.net/services
+    description: Full list of services and capabilities
+  - url: https://orviq.net/work
+    description: Portfolio of past projects
+  - url: https://orviq.net/blog
+    description: Articles on design, AI, and digital strategy
+  - url: https://orviq.net/process
+    description: Our creative and technical process
+  - url: https://orviq.net/contact
+    description: Contact form and studio information
+  - url: https://orviq.net/faq
+    description: Frequently asked questions
+
+# Brand voice
+tone: Premium, minimal, cinematic, confident, multilingual (ES/EN/FR)
+founded: 2024
+location: Spain / European Union
+languages: Spanish, English, French

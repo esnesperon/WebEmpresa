@@ -1,0 +1,143 @@
+---
+import SEO from '../components/SEO.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import CookieBanner from '../components/CookieBanner.astro';
+import Chatbot from '../components/Chatbot.astro';
+
+const GA_ID = import.meta.env.PUBLIC_GA_ID ?? '';
+
+interface Props {
+    title: string;
+    description: string;
+    image?: string;
+    type?: 'website' | 'article' | 'service';
+    publishedTime?: Date;
+    modifiedTime?: Date;
+    author?: string;
+    tags?: string[];
+    canonical?: string;
+    locale?: string;
+    robots?: string;
+    breadcrumbs?: { name: string; url: string }[];
+    faq?: { question: string; answer: string }[];
+    serviceArea?: string;
+    priceRange?: string;
+    reviews?: { author: string; body: string; rating: number }[];
+    howTo?: { name: string; description: string; totalTime?: string; steps: { name: string; text: string; url: string; image?: string }[] }[];
+    speakable?: { cssSelector: string | string[] }[];
+    video?: { name: string; description: string; thumbnailUrl: string; contentUrl: string; uploadDate: string; duration?: string }[];
+    softwareApps?: { name: string; description: string; applicationCategory: string; operatingSystem?: string; offers?: { price: string; priceCurrency: string } }[];
+}
+
+const {
+    title,
+    description,
+    image,
+    type,
+    publishedTime,
+    modifiedTime,
+    author,
+    tags,
+    canonical,
+    locale,
+    robots,
+    breadcrumbs,
+    faq,
+    serviceArea,
+    priceRange,
+    reviews,
+    howTo,
+    speakable,
+    video,
+    softwareApps,
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={locale ?? 'es'} class="dark">
+<head>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png?v=3" />
+<meta name="theme-color" content="#0a0a0f" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Orviq" />
+
+    <!-- SEO + GEO -->
+    <SEO
+        title={title}
+        description={description}
+        image={image}
+        type={type}
+        publishedTime={publishedTime}
+        modifiedTime={modifiedTime}
+        author={author}
+        tags={tags}
+        canonical={canonical}
+        locale={locale}
+        robots={robots}
+        breadcrumbs={breadcrumbs}
+        faq={faq}
+        serviceArea={serviceArea}
+        priceRange={priceRange}
+        reviews={reviews}
+        howTo={howTo}
+        speakable={speakable}
+        video={video}
+        softwareApps={softwareApps}
+    />
+
+    <!-- Fonts — preload for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700&display=swap" /></noscript>
+    <!-- Material Symbols — preload para evitar bloqueo de renderizado -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&;display=block" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&;display=block" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&;display=block" /></noscript>
+    <link rel="stylesheet" href="/styles.css" />
+
+<!-- Cloudflare Turnstile -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<!-- Cloudinary resource hints -->
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+
+    <!-- Per-page asset preloads (home video hero, etc.) -->
+    <slot name="head-assets" />
+    <!-- Unsplash resource hints -->
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+
+    <!-- Google Analytics 4 -->
+    {GA_ID && (
+        <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+            <script is:inline define:vars={{ GA_ID }}>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', GA_ID, {
+                    anonymize_ip: true,
+                    cookie_flags: 'SameSite=None;Secure'
+                });
+            </script>
+        </>
+    )}
+</head>
+<body class="bg-background text-on-background min-h-screen selection:bg-primary/30 selection:text-primary">
+    <Navbar />
+    <main class="flex-grow">
+        <slot />
+    </main>
+    <Footer />
+    <CookieBanner />
+    <Chatbot />
+</body>
+</html>

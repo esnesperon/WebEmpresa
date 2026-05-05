@@ -1,0 +1,181 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+import { Image } from 'astro:assets';
+const chatbotWebhook = import.meta.env.PUBLIC_N8N_CHATBOT_WEBHOOK || '';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<button
+    id="chatbot-toggle"
+    data-webhook={chatbotWebhook}
+    class="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-primary text-on-primary shadow-[0_0_20px_rgba(196,192,255,0.3)] hover:shadow-[0_0_30px_rgba(196,192,255,0.5)] hover:scale-110 transition-all duration-300 flex items-center justify-center"
+    aria-label={t('chat.open')}
+    type="button"
+>
+    <span class="material-symbols-outlined text-2xl">chat</span>
+</button>
+
+<div
+    id="chatbot-window"
+    class="fixed bottom-[5.5rem] right-6 z-[99] w-[360px] max-w-[calc(100vw-3rem)] bg-surface-container-high/95 backdrop-blur-[40px] border border-outline-variant/20 rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col opacity-0 translate-y-4 pointer-events-none transition-all duration-300"
+    style="height: 480px;"
+>
+    <div class="flex items-center justify-between p-4 border-b border-outline-variant/20 bg-surface-container/50 flex-shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-background border border-primary/20 flex items-center justify-center overflow-hidden">
+                <Image src="/chatbot-logo.png" alt="Bot Avatar" width={32} height={32} class="w-full h-full object-cover" />
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-on-background">{t('chat.title')}</p>
+                <p class="text-[10px] text-secondary flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>
+                    {t('chat.status')}
+                </p>
+            </div>
+        </div>
+        <button id="chatbot-close" class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-background hover:bg-surface-container-highest transition-all" aria-label={t('chat.close')} type="button">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+
+    <div id="chatbot-messages" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="flex gap-3">
+            <div class="w-7 h-7 rounded-full bg-background border border-primary/20 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                <Image src="/chatbot-logo.png" alt="Bot Avatar" width={32} height={32} class="w-full h-full object-cover" />
+            </div>
+            <div class="bg-surface-container/70 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[80%]">
+                <p class="text-sm text-on-surface">{t('chat.greeting')}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-4 border-t border-outline-variant/20 flex-shrink-0">
+        <form id="chatbot-form" class="flex gap-2">
+            <input
+                id="chatbot-input"
+                type="text"
+                class="flex-1 bg-surface-container/50 border border-outline-variant/30 rounded-full px-4 py-2.5 text-sm text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary transition-colors"
+                placeholder={t('chat.placeholder')}
+                autocomplete="off"
+            />
+            <button type="submit" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-fixed-dim transition-colors flex-shrink-0" aria-label={t('chat.send')}>
+                <span class="material-symbols-outlined text-sm">send</span>
+            </button>
+        </form>
+        <p class="text-[10px] text-on-surface-variant mt-2 text-center">{t('chat.warning')}</p>
+    </div>
+</div>
+
+<script is:inline define:vars={{
+    errorServer: t('chat.error.server'),
+    errorGeneral: t('chat.error.general'),
+    fallbackMsg: t('chat.fallback')
+}}>
+    (function() {
+        var toggleBtn = document.getElementById('chatbot-toggle');
+        var chatWindow = document.getElementById('chatbot-window');
+        var closeBtn = document.getElementById('chatbot-close');
+        var form = document.getElementById('chatbot-form');
+        var input = document.getElementById('chatbot-input');
+        var messages = document.getElementById('chatbot-messages');
+        var webhook = toggleBtn.dataset.webhook || '';
+        var isOpen = false;
+
+        function openChat() {
+            isOpen = true;
+            chatWindow.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            chatWindow.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            input.focus();
+        }
+
+        function closeChat() {
+            isOpen = false;
+            chatWindow.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+            chatWindow.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+        }
+
+        toggleBtn.addEventListener('click', function() {
+            if (isOpen) {
+                closeChat();
+            } else {
+                openChat();
+            }
+        });
+
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeChat();
+        });
+
+        function addMessage(text, isUser) {
+            var wrapper = document.createElement('div');
+            wrapper.className = isUser ? 'flex gap-3 flex-row-reverse' : 'flex gap-3';
+
+            var avatar = document.createElement('div');
+            avatar.className = 'w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden ' + (isUser ? 'bg-secondary/20' : 'bg-background border border-primary/20');
+            avatar.innerHTML = isUser ? '<span class="material-symbols-outlined text-secondary text-xs">person</span>' : '<img src="/chatbot-logo.png" alt="Bot" class="w-full h-full object-cover" />';
+
+            var bubble = document.createElement('div');
+            bubble.className = (isUser ? 'bg-primary/20 rounded-2xl rounded-tr-sm' : 'bg-surface-container/70 rounded-2xl rounded-tl-sm') + ' px-4 py-3 max-w-[80%]';
+            var p = document.createElement('p');
+            p.className = 'text-sm text-on-surface whitespace-pre-wrap';
+            p.textContent = text;
+            bubble.appendChild(p);
+
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(bubble);
+            messages.appendChild(wrapper);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function addTyping() {
+            var id = 'typing-' + Date.now();
+            var wrapper = document.createElement('div');
+            wrapper.id = id;
+            wrapper.className = 'flex gap-3';
+            wrapper.innerHTML = '<div class="w-7 h-7 rounded-full bg-background border border-primary/20 flex-shrink-0 flex items-center justify-center overflow-hidden"><img src="/chatbot-logo.png" alt="Bot" class="w-full h-full object-cover" /></div><div class="bg-surface-container/70 rounded-2xl rounded-tl-sm px-4 py-3"><div class="flex gap-1"><span class="w-2 h-2 rounded-full bg-on-surface-variant animate-bounce"></span><span class="w-2 h-2 rounded-full bg-on-surface-variant animate-bounce" style="animation-delay:150ms"></span><span class="w-2 h-2 rounded-full bg-on-surface-variant animate-bounce" style="animation-delay:300ms"></span></div></div>';
+            messages.appendChild(wrapper);
+            messages.scrollTop = messages.scrollHeight;
+            return id;
+        }
+
+        function removeTyping(id) {
+            var el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var text = input.value.trim();
+            if (!text) return;
+
+            addMessage(text, true);
+            input.value = '';
+
+            var typingId = addTyping();
+
+            try {
+                var res = await fetch(webhook, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text, timestamp: new Date().toISOString() })
+                });
+
+                removeTyping(typingId);
+
+                if (res.ok) {
+                    var data = await res.json();
+                    var reply = data.reply || data.message || data.response || fallbackMsg;
+                    addMessage(reply, false);
+                } else {
+                    addMessage(errorGeneral, false);
+                }
+            } catch (err) {
+                removeTyping(typingId);
+                addMessage(errorServer, false);
+            }
+        });
+    })();
+</script>

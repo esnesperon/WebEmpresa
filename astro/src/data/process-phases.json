@@ -1,0 +1,110 @@
+[
+    {
+        "number": "01",
+        "icon": "search",
+        "image": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2084&auto=format&fit=crop",
+        "order": "right",
+        "es": {
+            "title": "Descubrimiento",
+            "description": "Empezamos entendiendo tu negocio, tus procesos actuales y el problema real que quieres resolver. Cada proyecto parte de un briefing propio. Definimos alcance, objetivos medibles y entregables antes de firmar nada."
+        },
+        "en": {
+            "title": "Discovery",
+            "description": "We start by understanding your business, your current processes and the real problem you want to solve. Each project starts with its own briefing. We define scope, measurable objectives and deliverables before signing anything."
+        },
+        "fr": {
+            "title": "Découverte",
+            "description": "Nous commençons par comprendre votre entreprise, vos processus actuels et le vrai problème que vous souhaitez résoudre. Nous définissons la portée, les objectifs mesurables et les livrables avant de signer quoi que ce soit."
+        }
+    },
+    {
+        "number": "02",
+        "icon": "handshake",
+        "image": "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2070&auto=format&fit=crop",
+        "order": "left",
+        "es": {
+            "title": "Propuesta & Acuerdo",
+            "description": "Presentamos una propuesta con el alcance exacto, el precio cerrado y el plazo de entrega. Sin presupuestos vagos ni sorpresas posteriores. Si el proyecto cambia de scope, lo tratamos de forma transparente y acordada."
+        },
+        "en": {
+            "title": "Proposal & Agreement",
+            "description": "We present a proposal with the exact scope, fixed price and delivery timeline. No vague budgets or later surprises. If the project scope changes, we handle it transparently and by mutual agreement."
+        },
+        "fr": {
+            "title": "Proposition & Accord",
+            "description": "Nous présentons une proposition avec la portée exacte, le prix fixe et le délai de livraison. Pas de budgets vagues ni de surprises ultérieures. Si la portée change, nous le traitons de manière transparente et concertée."
+        }
+    },
+    {
+        "number": "03",
+        "icon": "architecture",
+        "image": "https://images.unsplash.com/photo-1664575602276-acd073f104c1?q=80&w=2070&auto=format&fit=crop",
+        "order": "right",
+        "es": {
+            "title": "Diseño & Planificación",
+            "description": "Antes de ejecutar, planificamos. Diseñamos la estructura del sistema o la interfaz y la validamos contigo. El cliente aprueba antes de avanzar, lo que evita malentendidos y revisiones innecesarias."
+        },
+        "en": {
+            "title": "Design & Planning",
+            "description": "Before executing, we plan. We design the system structure or interface and validate it with you. The client approves before moving forward, avoiding misunderstandings and unnecessary revisions."
+        },
+        "fr": {
+            "title": "Conception & Planification",
+            "description": "Avant d'exécuter, nous planifions. Nous concevons la structure du système ou l'interface et la validons avec vous. Le client approuve avant d'avancer, ce qui évite les malentendus et les révisions inutiles."
+        }
+    },
+    {
+        "number": "04",
+        "icon": "code",
+        "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+        "order": "left",
+        "es": {
+            "title": "Desarrollo & Revisiones",
+            "description": "Construimos en iteraciones con revisiones pactadas. Ves el progreso real antes del resultado final. Las rondas de revisión están definidas en el contrato para que el alcance no se diluya."
+        },
+        "en": {
+            "title": "Development & Reviews",
+            "description": "We build in iterations with agreed reviews. You see real progress before the final result. Review rounds are defined in the contract so the scope doesn't dilute."
+        },
+        "fr": {
+            "title": "Développement & Révisions",
+            "description": "Nous construisons par itérations avec des révisions convenues. Vous voyez les progrès réels avant le résultat final. Les rondes de révision sont définies dans le contrat pour que la portée ne se dilue pas."
+        }
+    },
+    {
+        "number": "05",
+        "icon": "rocket_launch",
+        "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop",
+        "order": "right",
+        "es": {
+            "title": "Entrega & Formación",
+            "description": "Desplegamos en infraestructura propia dentro de la UE con backups automáticos y monitorización activa. Formamos a tu equipo para operar lo entregado de forma autónoma. Documentación incluida."
+        },
+        "en": {
+            "title": "Delivery & Training",
+            "description": "We deploy on own EU infrastructure with automatic backups and active monitoring. We train your team to operate the delivered solution autonomously. Documentation included."
+        },
+        "fr": {
+            "title": "Livraison & Formation",
+            "description": "Nous déployons sur notre infrastructure européenne avec des sauvegardes automatiques et une surveillance active. Nous formons votre équipe pour opérer la solution livrée de manière autonome. Documentation incluse."
+        }
+    },
+    {
+        "number": "06",
+        "icon": "support_agent",
+        "image": "https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=2070&auto=format&fit=crop",
+        "order": "left",
+        "es": {
+            "title": "Soporte & Evolución",
+            "description": "Dos semanas de soporte post-lanzamiento incluidas en todos los proyectos. Para quienes necesitan continuidad, ofrecemos acompañamiento mensual con actualizaciones, monitorización y soporte técnico."
+        },
+        "en": {
+            "title": "Support & Evolution",
+            "description": "Two weeks of post-launch support included in all projects. For those needing continuity, we offer monthly accompaniment with updates, monitoring and technical support."
+        },
+        "fr": {
+            "title": "Support & Évolution",
+            "description": "Deux semaines de support post-lancement incluses dans tous les projets. Pour ceux qui ont besoin de continuité, nous offrons un accompagnement mensuel avec des mises à jour, une surveillance et un support technique."
+        }
+    }
+]

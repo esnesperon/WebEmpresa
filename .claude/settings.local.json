@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.astro$\")",
+      "Bash(rm \"C:\\\\Users\\\\alexe\\\\OneDrive\\\\Escritorio\\\\Proyectos\\\\Enterprise\\\\Web\\\\astro\\\\src\\\\pages\\\\en\\\\[page].astro\")",
+      "Bash(rm \"C:\\\\Users\\\\alexe\\\\OneDrive\\\\Escritorio\\\\Proyectos\\\\Enterprise\\\\Web\\\\astro\\\\src\\\\pages\\\\fr\\\\[page].astro\")",
+      "Bash(grep -E \"\\\\.\\(css|json|mjs|ts\\)$\")",
+      "Bash(npm audit *)"
+    ]
+  }
+}

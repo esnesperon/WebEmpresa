@@ -1,0 +1,451 @@
+---
+/**
+ * SEO + GEO Component — Orviq Studio
+ * Covers: primary meta, Open Graph, X (Twitter) Cards, robots, canonical,
+ * hreflang, structured data (JSON-LD), and Generative Engine Optimization (GEO)
+ * signals so that LLMs & AI search engines can surface the brand accurately.
+ */
+
+interface Props {
+    title: string;
+    description: string;
+    image?: string;
+    canonical?: string;
+    type?: 'website' | 'article' | 'service';
+    publishedTime?: Date;
+    modifiedTime?: Date;
+    author?: string;
+    tags?: string[];
+    /** Locale in BCP-47 format, default: 'es-ES' */
+    locale?: string;
+    /** Additional locales for hreflang alternates */
+    alternateLocales?: { locale: string; url: string }[];
+    /** Explicit robots directive, default: 'index, follow' */
+    robots?: string;
+    /** Breadcrumb list for rich snippets */
+    breadcrumbs?: { name: string; url: string }[];
+    /** FAQ pairs for rich snippets (article/service pages) */
+    faq?: { question: string; answer: string }[];
+    /** Service-specific: price range, service area */
+    serviceArea?: string;
+    priceRange?: string;
+    /** Noindex for pages without translations to avoid false hreflang */
+    noAlternate?: boolean;
+    /** Review schema for E-E-A-T signals */
+    reviews?: { author: string; body: string; rating: number }[];
+    /** HowTo structured data */
+    howTo?: { name: string; description: string; totalTime?: string; steps: { name: string; text: string; url: string; image?: string }[] }[];
+    /** Speakable sections for voice search */
+    speakable?: { cssSelector: string | string[] }[];
+    /** Video metadata for VideoObject schema */
+    video?: { name: string; description: string; thumbnailUrl: string; contentUrl: string; uploadDate: string; duration?: string }[];
+    /** Software applications for Product / SoftwareApplication schema */
+    softwareApps?: { name: string; description: string; applicationCategory: string; operatingSystem?: string; offers?: { price: string; priceCurrency: string } }[];
+}
+
+const {
+    title,
+    description,
+    image = '/og-default.jpg',
+    canonical,
+    type = 'website',
+    publishedTime,
+    modifiedTime,
+    author = 'Orviq Studio',
+    tags = [],
+    locale = 'es-ES',
+    alternateLocales = [],
+    robots = 'index, follow',
+    breadcrumbs = [],
+    faq = [],
+    howTo = [],
+    speakable = [],
+    video = [],
+    softwareApps = [],
+    serviceArea,
+    priceRange,
+    noAlternate = false,
+    reviews = [],
+} = Astro.props;
+
+const SITE = 'https://orviq.net';
+const BRAND = 'Orviq';
+const BRAND_FULL = 'Orviq';
+const BRAND_DESCRIPTION =
+    'Orviq — Automatización de procesos, desarrollo web, inteligencia artificial y consultoría tecnológica para PYMEs y empresas. Infraestructura propia en la UE, precio cerrado y sin sorpresas.';
+
+const fullTitle = title.includes(BRAND) ? title : `${title} | ${BRAND}`;
+const ogImage = image.startsWith('http') ? image : `${SITE}${image}`;
+const canonicalUrl = canonical ?? `${SITE}${Astro.url.pathname}`;
+
+// Determine default (ES) canonical for x-default
+const path = Astro.url.pathname;
+let basePath = path;
+if (basePath.startsWith('/en')) basePath = basePath.slice(3) || '/';
+if (basePath.startsWith('/fr')) basePath = basePath.slice(3) || '/';
+const defaultUrl = `${SITE}${basePath}`;
+
+// Auto-generate hreflang alternates for ALL 3 locales (ES, EN, FR) if not provided and not disabled
+const autoAlternates = noAlternate
+    ? []
+    : alternateLocales.length > 0
+        ? alternateLocales
+        : [
+            { locale: 'es-ES', url: `${SITE}${basePath}` },
+            { locale: 'en-US', url: `${SITE}/en${basePath === '/' ? '' : basePath}` },
+            { locale: 'fr-FR', url: `${SITE}/fr${basePath === '/' ? '' : basePath}` },
+        ];
+
+// ─── Social handles (single source of truth) ───────────────────────────────
+const SOCIALS = {
+    x:         'https://x.com/Orviq_es',
+    x_en:      'https://x.com/Orviqhq',
+    instagram: 'https://www.instagram.com/orviq_es',
+    tiktok:    'https://www.tiktok.com/@orviq.net',
+    github:    'https://github.com/Orviq',
+    linkedin:  'https://www.linkedin.com/company/orviq',
+    youtube:   'https://www.youtube.com/@Orviq',
+};
+
+// ─── Base JSON-LD graph ─────────────────────────────────────────────────────
+type JsonLdNode = Record<string, unknown>;
+const jsonLdNodes: JsonLdNode[] = [];
+
+// Organization (always present — GEO anchor node)
+jsonLdNodes.push({
+    '@type': 'Organization',
+    '@id': `${SITE}/#organization`,
+    name: BRAND_FULL,
+    alternateName: BRAND,
+    url: SITE,
+    logo: {
+        '@type': 'ImageObject',
+        url: `${SITE}/favicon.png`,
+        width: 512,
+        height: 512,
+    },
+    description: BRAND_DESCRIPTION,
+    foundingDate: '2024',
+    knowsAbout: [
+        'Automatización de procesos',
+        'Inteligencia Artificial',
+        'Desarrollo web',
+        'Software a medida',
+        'Agentes de IA',
+        'Consultoría tecnológica',
+        'Infraestructura cloud europea',
+        'Branding e identidad digital',
+        'Extracción de datos',
+        'Comercio electrónico',
+    ],
+    sameAs: Object.values(SOCIALS),
+    contactPoint: {
+        '@type': 'ContactPoint',
+        email: 'orviq.contact@gmail.com',
+        contactType: 'customer support',
+        availableLanguage: ['Spanish', 'English'],
+    },
+    ...(serviceArea ? { areaServed: serviceArea } : {}),
+    ...(priceRange ? { priceRange } : {}),
+});
+
+// WebSite (always present — enables sitelinks search box)
+jsonLdNodes.push({
+    '@type': 'WebSite',
+    '@id': `${SITE}/#website`,
+    url: SITE,
+    name: BRAND_FULL,
+    description: BRAND_DESCRIPTION,
+    publisher: { '@id': `${SITE}/#organization` },
+    potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${SITE}/blog?q={search_term_string}`,
+        },
+        'query-input': 'required name=search_term_string',
+    },
+    inLanguage: locale,
+});
+
+// Current page node
+if (type === 'article' && publishedTime) {
+    jsonLdNodes.push({
+        '@type': 'BlogPosting',
+        '@id': `${canonicalUrl}#article`,
+        headline: title,
+        description,
+        url: canonicalUrl,
+        image: {
+            '@type': 'ImageObject',
+            url: ogImage,
+        },
+        datePublished: publishedTime.toISOString(),
+        dateModified: (modifiedTime ?? publishedTime).toISOString(),
+        author: {
+            '@type': 'Organization',
+            '@id': `${SITE}/#organization`,
+            name: author,
+        },
+        publisher: { '@id': `${SITE}/#organization` },
+        isPartOf: { '@id': `${SITE}/#website` },
+        ...(tags.length > 0 ? { keywords: tags.join(', ') } : {}),
+        inLanguage: locale,
+    });
+} else if (type === 'service') {
+    jsonLdNodes.push({
+        '@type': 'Service',
+        '@id': `${canonicalUrl}#service`,
+        name: title,
+        description,
+        url: canonicalUrl,
+        provider: { '@id': `${SITE}/#organization` },
+        ...(serviceArea ? { areaServed: serviceArea } : {}),
+        ...(priceRange ? { offers: { '@type': 'Offer', priceRange } } : {}),
+        inLanguage: locale,
+    });
+} else {
+    jsonLdNodes.push({
+        '@type': 'WebPage',
+        '@id': `${canonicalUrl}#webpage`,
+        url: canonicalUrl,
+        name: fullTitle,
+        description,
+        isPartOf: { '@id': `${SITE}/#website` },
+        about: { '@id': `${SITE}/#organization` },
+        dateModified: (modifiedTime ?? new Date()).toISOString(),
+        inLanguage: locale,
+    });
+}
+
+// Breadcrumbs
+if (breadcrumbs.length > 0) {
+    jsonLdNodes.push({
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbs.map((crumb, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            name: crumb.name,
+            item: crumb.url,
+        })),
+    });
+}
+
+// FAQ rich result
+if (faq.length > 0) {
+    jsonLdNodes.push({
+        '@type': 'FAQPage',
+        mainEntity: faq.map(({ question, answer }) => ({
+            '@type': 'Question',
+            name: question,
+            acceptedAnswer: {
+                '@type': 'Answer',
+                text: answer,
+            },
+        })),
+    });
+}
+
+// HowTo schema
+if (howTo && howTo.length > 0) {
+    howTo.forEach((ht) => {
+        jsonLdNodes.push({
+            '@type': 'HowTo',
+            name: ht.name,
+            description: ht.description,
+            ...(ht.totalTime ? { totalTime: ht.totalTime } : {}),
+            step: ht.steps.map((step, i) => ({
+                '@type': 'HowToStep',
+                position: i + 1,
+                name: step.name,
+                text: step.text,
+                url: step.url,
+                ...(step.image ? { image: { '@type': 'ImageObject', url: step.image } } : {}),
+            })),
+        });
+    });
+}
+
+// VideoObject schema for pages with video
+if (video && video.length > 0) {
+    video.forEach((v) => {
+        jsonLdNodes.push({
+            '@type': 'VideoObject',
+            name: v.name,
+            description: v.description,
+            thumbnailUrl: v.thumbnailUrl,
+            contentUrl: v.contentUrl,
+            uploadDate: v.uploadDate,
+            ...(v.duration ? { duration: v.duration } : {}),
+            publisher: { '@id': `${SITE}/#organization` },
+        });
+    });
+}
+
+// SoftwareApplication schema for product pages
+if (softwareApps && softwareApps.length > 0) {
+    softwareApps.forEach((app) => {
+        jsonLdNodes.push({
+            '@type': 'SoftwareApplication',
+            name: app.name,
+            description: app.description,
+            applicationCategory: app.applicationCategory,
+            operatingSystem: app.operatingSystem ?? 'Web',
+            ...(app.offers ? { offers: { '@type': 'Offer', ...app.offers } } : {}),
+            provider: { '@id': `${SITE}/#organization` },
+        });
+    });
+}
+
+// Speakable sections for voice assistants
+if (speakable && speakable.length > 0) {
+    jsonLdNodes.push({
+        '@type': 'WebPage',
+        '@id': `${canonicalUrl}#webpage`,
+        speakable: speakable.map((s) => ({
+            '@type': 'SpeakableSpecification',
+            cssSelector: Array.isArray(s.cssSelector) ? s.cssSelector : [s.cssSelector],
+        })),
+    });
+}
+
+// LocalBusiness schema for European SEO
+jsonLdNodes.push({
+    '@type': 'LocalBusiness',
+    '@id': `${SITE}/#localbusiness`,
+    name: BRAND_FULL,
+    image: `${SITE}/favicon.png`,
+    url: SITE,
+    address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Calle Literato Fray Luis Galiana, 1-3, Apdo nº72',
+        addressLocality: 'Ontinyent',
+        addressRegion: 'Valencia',
+        postalCode: '46870',
+        addressCountry: 'ES',
+    },
+    areaServed: serviceArea ?? 'Unión Europea',
+    priceRange: priceRange ?? '€€',
+    openingHoursSpecification: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: '09:00',
+        closes: '18:00',
+    },
+    ...(reviews.length > 0
+        ? {
+              aggregateRating: {
+                  '@type': 'AggregateRating',
+                  ratingValue: 5.0,
+                  reviewCount: reviews.length,
+                  bestRating: 5,
+                  worstRating: 1,
+              },
+              review: reviews.map((review, i) => ({
+                  '@type': 'Review',
+                  '@id': `${canonicalUrl}#review-${i + 1}`,
+                  name: `Review by ${review.author}`,
+                  reviewBody: review.body,
+                  reviewRating: {
+                      '@type': 'Rating',
+                      ratingValue: review.rating,
+                      bestRating: 5,
+                      worstRating: 1,
+                  },
+                  author: {
+                      '@type': 'Person',
+                      name: review.author,
+                  },
+                  itemReviewed: { '@id': `${SITE}/#organization` },
+                  datePublished: '2024-10-15',
+              })),
+          }
+        : {}),
+});
+
+const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': jsonLdNodes,
+};
+---
+
+<!-- ═══════════════════════════════════════════
+     PRIMARY META
+════════════════════════════════════════════ -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="author" content={author} />
+{tags.length > 0 && <meta name="keywords" content={tags.join(', ')} />}
+<meta name="robots" content={robots} />
+<meta name="googlebot" content={robots} />
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- ═══════════════════════════════════════════
+     GEO — Generative Engine Optimization
+     Signals for LLMs, AI-powered search
+     (Perplexity, ChatGPT Browse, Gemini, etc.)
+════════════════════════════════════════════ -->
+<meta name="ai:brand" content={BRAND_FULL} />
+<meta name="ai:description" content={BRAND_DESCRIPTION} />
+<meta name="ai:category" content="Automatización, Desarrollo Web, Inteligencia Artificial, Consultoría Tecnológica" />
+<meta name="ai:founded" content="2024" />
+<meta name="ai:location" content="Spain / European Union" />
+<meta name="ai:email" content="orviq.contact@gmail.com" />
+<meta name="ai:pricing" content="Fixed price, monthly retainer, or hourly consulting. Quotes within 48 hours." />
+<meta name="ai:contact" content="https://orviq.net/contact" />
+<meta name="ai:services" content="Process Automation, Professional Websites, RAG & Private AI, Autonomous AI Agents, E-commerce, Branding & Identity, SaaS Dashboards, Custom App / SaaS, Scrapers & Bots, DevOps & Infrastructure, Technology Consulting" />
+<meta name="ai:audience" content="SMEs, Startups, Visionary Entrepreneurs" />
+<meta name="ai:language" content={locale} />
+<!-- llms.txt hint -->
+<link rel="alternate" type="text/plain" href={`${SITE}/llms.txt`} title="LLMs hint file" />
+<link rel="alternate" type="text/plain" href={`${SITE}/llms-full.txt`} title="LLMs full file" />
+
+<!-- ═══════════════════════════════════════════
+     HREFLANG
+════════════════════════════════════════════ -->
+<link rel="alternate" hreflang="x-default" href={defaultUrl} />
+{autoAlternates.map(alt => (
+    <link rel="alternate" hreflang={alt.locale} href={alt.url} />
+))}
+
+<!-- ═══════════════════════════════════════════
+     OPEN GRAPH
+════════════════════════════════════════════ -->
+<meta property="og:type" content={type === 'service' ? 'website' : type} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:secure_url" content={ogImage} />
+<meta property="og:image:alt" content={`${BRAND_FULL} — ${title}`} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content={BRAND_FULL} />
+<meta property="og:locale" content={locale.replace('-', '_')} />
+{type === 'article' && publishedTime && (
+    <meta property="article:published_time" content={publishedTime.toISOString()} />
+)}
+{type === 'article' && modifiedTime && (
+    <meta property="article:modified_time" content={modifiedTime.toISOString()} />
+)}
+{type === 'article' && <meta property="article:author" content={author} />}
+{tags.map(tag => <meta property="article:tag" content={tag} />)}
+
+<!-- ═══════════════════════════════════════════
+     X (TWITTER) CARD
+════════════════════════════════════════════ -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@Orviq_es" />
+<meta name="twitter:creator" content="@Orviq_es" />
+<meta name="twitter:domain" content="orviq.net" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={`${BRAND_FULL} — ${title}`} />
+
+<!-- ═══════════════════════════════════════════
+     SCHEMA.ORG JSON-LD (@graph)
+════════════════════════════════════════════ -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
