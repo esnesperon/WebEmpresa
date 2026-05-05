@@ -8,4 +8,5 @@ astro/.astro
 !astro/src/content/**/*.md
 .env
 .env.*
+!astro/.env
 .vscode
