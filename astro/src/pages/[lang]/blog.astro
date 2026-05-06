@@ -173,6 +173,7 @@ const errText = t('blog.newsletter.err');
 
         document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!e.target.dataset.webhook) { return; }
             const email = document.getElementById('newsletter-email').value;
             const messageEl = document.getElementById('newsletter-message');
             const btn = e.target.querySelector('button[type="submit"]');

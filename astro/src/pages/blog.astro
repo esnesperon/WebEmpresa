@@ -170,6 +170,7 @@ const categories = ['All', ...new Set(allPosts.map(p => p.data.category))];
         // Newsletter - using Formspree (free, no signup needed for simple forms)
         document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!e.target.dataset.webhook) { return; }
             const email = document.getElementById('newsletter-email').value;
             const messageEl = document.getElementById('newsletter-message');
             const btn = e.target.querySelector('button[type="submit"]');

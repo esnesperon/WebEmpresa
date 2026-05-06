@@ -172,6 +172,8 @@ const errorText = t('contact.error');
             const data = Object.fromEntries(formData.entries());
             const webhook = this.dataset.webhook || '';
 
+            if (!webhook) { alert(errorText); btn.textContent = submitText; btn.disabled = false; return; }
+
             if (data.website) {
                 this.reset();
                 document.getElementById('form-success').classList.remove('hidden');

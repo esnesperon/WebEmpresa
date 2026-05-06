@@ -157,6 +157,7 @@ const t = useTranslations(lang);
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+            if (!webhook) { addMessage(errorServer, false); return; }
             var text = input.value.trim();
             if (!text) return;
 
