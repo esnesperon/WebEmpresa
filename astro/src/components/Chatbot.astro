@@ -65,7 +65,7 @@ const t = useTranslations(lang);
             <button type="submit" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-primary-fixed-dim transition-colors flex-shrink-0" aria-label={t('chat.send')}>
                 <span class="material-symbols-outlined text-sm">send</span>
             </button>
-            <div id="chatbot-turnstile" class="cf-turnstile" data-theme="dark" data-size="compact"></div>
+            <div id="chatbot-turnstile"></div>
         </form>
         <p class="text-[10px] text-on-surface-variant mt-2 text-center">{t('chat.warning')}</p>
     </div>
