@@ -74,7 +74,8 @@ const t = useTranslations(lang);
 <script is:inline define:vars={{
     errorServer: t('chat.error.server'),
     errorGeneral: t('chat.error.general'),
-    fallbackMsg: t('chat.fallback')
+    fallbackMsg: t('chat.fallback'),
+    turnstileSiteKey: turnstileKey
 }}>
     (function() {
         var toggleBtn = document.getElementById('chatbot-toggle');
@@ -84,19 +85,26 @@ const t = useTranslations(lang);
         var input = document.getElementById('chatbot-input');
         var messages = document.getElementById('chatbot-messages');
         var webhook = toggleBtn.dataset.webhook || '';
-        var turnstileKey = '0x4AAAAAACvGSGyNCwh7JaJQ';
         var turnstileWidgetId = null;
+        var turnstileReady = false;
         var isOpen = false;
+
+        function tryRenderTurnstile() {
+            var turnstileEl = document.getElementById('chatbot-turnstile');
+            if (turnstileEl && turnstileWidgetId === null && window.turnstile && turnstileSiteKey) {
+                turnstileWidgetId = turnstile.render(turnstileEl, { sitekey: String(turnstileSiteKey), theme: 'dark', size: 'compact' });
+                turnstileReady = true;
+            }
+        }
+
+        window.addEventListener('turnstileLoaded', tryRenderTurnstile);
 
         function openChat() {
             isOpen = true;
             chatWindow.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
             chatWindow.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
             input.focus();
-            var turnstileEl = document.getElementById('chatbot-turnstile');
-            if (turnstileEl && turnstileWidgetId === null && window.turnstile && turnstileKey) {
-                turnstileWidgetId = turnstile.render(turnstileEl, { sitekey: String(turnstileKey), theme: 'dark', size: 'compact' });
-            }
+            tryRenderTurnstile();
         }
 
         function closeChat() {
@@ -155,6 +163,11 @@ const t = useTranslations(lang);
             if (el) el.remove();
         }
 
+        function extractReply(data) {
+            var item = Array.isArray(data) ? data[0] : data;
+            return item?.output || item?.reply || item?.response || item?.message || item?.text || item?.answer || item?.content || (typeof item === 'string' ? item : null);
+        }
+
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             if (!webhook) { addMessage(errorServer, false); return; }
@@ -178,14 +191,30 @@ const t = useTranslations(lang);
 
                 removeTyping(typingId);
 
-                if (res.ok) {
-                    var data = await res.json();
-                    var reply = data.reply || data.message || data.response || fallbackMsg;
-                    addMessage(reply, false);
-                    if (window.turnstile) window.turnstile.reset();
-                } else {
+                var rawText = await res.text();
+
+                if (!res.ok) {
                     addMessage(errorGeneral, false);
+                    return;
                 }
+
+                var data;
+                try {
+                    data = JSON.parse(rawText);
+                } catch {
+                    addMessage(typeof rawText === 'string' && rawText.trim() ? rawText.trim() : fallbackMsg, false);
+                    return;
+                }
+
+                var reply = extractReply(data);
+
+                if (reply) {
+                    addMessage(reply, false);
+                } else {
+                    addMessage(fallbackMsg, false);
+                }
+
+                if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
             } catch (err) {
                 removeTyping(typingId);
                 addMessage(errorServer, false);

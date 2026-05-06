@@ -155,13 +155,22 @@ const errorText = t('contact.error');
 </div>
 </section>
 
-<script is:inline define:vars={{ sendingText, submitText, successText, errorText }}>
+<script is:inline define:vars={{ sendingText, submitText, successText, errorText, turnstileSiteKey: turnstileKey }}>
         var contactForm = document.getElementById('contact-form');
-        var turnstileSiteKey = '0x4AAAAAACvGSGyNCwh7JaJQ';
         var turnstileWidgetId = null;
-        if (window.turnstile) {
-            turnstileWidgetId = turnstile.render('#turnstile-container', { sitekey: turnstileSiteKey });
+
+        function tryRenderTurnstile() {
+            if (turnstileWidgetId === null && window.turnstile && turnstileSiteKey) {
+                turnstileWidgetId = turnstile.render('#turnstile-container', { sitekey: String(turnstileSiteKey) });
+            }
         }
+
+        if (window.turnstile) {
+            tryRenderTurnstile();
+        } else {
+            window.addEventListener('turnstileLoaded', tryRenderTurnstile);
+        }
+
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('form-submit');

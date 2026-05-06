@@ -1,0 +1,698 @@
+---
+// ChatWidget.astro — Asistente Orviq flotante
+const WEBHOOK_URL = 'https://n8n.orviq.net/webhook-test/orviq-chatbot';
+---
+
+<div id="chat-widget" aria-live="polite">
+  <!-- Botón flotante -->
+  <button
+    id="chat-toggle"
+    aria-label="Abrir asistente Orviq"
+    aria-expanded="false"
+    aria-controls="chat-panel"
+  >
+    <svg id="chat-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
+  <!-- Panel de chat -->
+  <div
+    id="chat-panel"
+    role="dialog"
+    aria-label="Asistente Orviq"
+    aria-modal="false"
+    hidden
+  >
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="chat-avatar" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+          </svg>
+        </span>
+        <div>
+          <span class="chat-name">Asistente Orviq</span>
+          <span class="chat-status">
+            <span class="status-dot" aria-hidden="true"></span>
+            En línea
+          </span>
+        </div>
+      </div>
+      <button class="chat-close-btn" id="chat-close" aria-label="Cerrar chat">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Área de mensajes -->
+    <div class="chat-messages" id="chat-messages" role="log" aria-label="Mensajes del chat">
+      <div class="message message-ai">
+        <p>¡Hola! Soy el asistente de <strong>Orviq</strong>. ¿En qué puedo ayudarte hoy? Puedo contarte sobre nuestros servicios de automatización, webs profesionales o soluciones SaaS a medida.</p>
+      </div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="typing-indicator" id="typing-indicator" aria-label="El asistente está escribiendo" hidden>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <!-- Input área -->
+    <div class="chat-input-area">
+      <input
+        type="text"
+        id="chat-input"
+        class="chat-input"
+        placeholder="Escribe tu mensaje..."
+        maxlength="500"
+        autocomplete="off"
+        aria-label="Mensaje para el asistente"
+      />
+      <button class="chat-send-btn" id="chat-send" aria-label="Enviar mensaje" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  #chat-widget {
+    position: fixed;
+    bottom: var(--space-6);
+    right: var(--space-6);
+    z-index: 9999;
+    font-family: var(--font-ui);
+  }
+
+  /* ── Botón flotante ── */
+  #chat-toggle {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--nordic-teal), #158A63);
+    border: var(--border-width) solid rgba(29, 158, 117, 0.4);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-teal), 0 2px 8px rgba(0,0,0,0.4);
+    transition: transform var(--duration-base) var(--ease-out),
+                box-shadow var(--duration-base) var(--ease-out),
+                background var(--duration-base) var(--ease-out);
+    position: relative;
+    z-index: 1;
+  }
+
+  #chat-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 32px rgba(29, 158, 117, 0.45), 0 2px 12px rgba(0,0,0,0.5);
+  }
+
+  #chat-toggle:active {
+    transform: scale(0.97);
+  }
+
+  #chat-toggle[aria-expanded="true"] {
+    background: linear-gradient(135deg, var(--orviq-purple-light, #5E52A8), var(--orviq-purple, #4A3F8A));
+    border-color: rgba(74, 63, 138, 0.4);
+    box-shadow: var(--shadow-purple), 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  /* ── Panel de chat ── */
+  #chat-panel {
+    position: absolute;
+    bottom: 64px;
+    right: 0;
+    width: 360px;
+    height: 500px;
+    background: var(--night-lighter, #15202F);
+    border: var(--border-width) solid var(--border-dark, rgba(255,255,255,0.08));
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg), 0 0 0 0.5px rgba(155, 143, 212, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform-origin: bottom right;
+    animation: chat-open var(--duration-base) var(--ease-out) forwards;
+  }
+
+  #chat-panel[hidden] {
+    display: none;
+  }
+
+  @keyframes chat-open {
+    from {
+      opacity: 0;
+      transform: scale(0.92) translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* ── Header ── */
+  .chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    background: rgba(29, 158, 117, 0.08);
+    border-bottom: var(--border-width) solid var(--border-dark);
+    flex-shrink: 0;
+  }
+
+  .chat-header-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .chat-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, rgba(29,158,117,0.3), rgba(74,63,138,0.3));
+    border: var(--border-width) solid rgba(29, 158, 117, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nordic-teal);
+    flex-shrink: 0;
+  }
+
+  .chat-name {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-primary-dark);
+    line-height: 1.2;
+  }
+
+  .chat-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-xs);
+    color: var(--nordic-teal);
+    line-height: 1;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--nordic-teal);
+    box-shadow: 0 0 6px rgba(29, 158, 117, 0.6);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .chat-close-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: none;
+    color: var(--text-muted-dark);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+
+  .chat-close-btn:hover {
+    background: rgba(255,255,255,0.06);
+    color: var(--text-primary-dark);
+  }
+
+  /* ── Mensajes ── */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    scroll-behavior: smooth;
+  }
+
+  .chat-messages::-webkit-scrollbar {
+    width: 4px;
+  }
+  .chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: var(--border-dark);
+    border-radius: 2px;
+  }
+
+  :global(.message) {
+    max-width: 85%;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    animation: msg-in var(--duration-base) var(--ease-out) forwards;
+  }
+
+  @keyframes msg-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  :global(.message p) {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+
+  :global(.message strong) {
+    color: var(--nordic-teal);
+    font-weight: 600;
+  }
+
+  :global(.message ul),
+  :global(.message ol) {
+    margin: var(--space-2) 0 var(--space-1) 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    counter-reset: ol-counter;
+  }
+
+  :global(.message li) {
+    position: relative;
+    padding-left: var(--space-5);
+    font-size: inherit;
+    line-height: 1.5;
+    color: inherit;
+  }
+
+  /* Bullet para ul */
+  :global(.message ul li::before) {
+    content: '•';
+    position: absolute;
+    left: var(--space-2);
+    color: var(--nordic-teal);
+    font-size: 0.9em;
+    line-height: 1.6;
+  }
+
+  /* Número para ol */
+  :global(.message ol li) {
+    counter-increment: ol-counter;
+  }
+
+  :global(.message ol li::before) {
+    content: counter(ol-counter) '.';
+    position: absolute;
+    left: 0;
+    color: var(--nordic-teal);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1.8;
+    font-family: var(--font-mono);
+  }
+
+  /* En burbuja de usuario, bullets en blanco */
+  :global(.message-user ul li::before),
+  :global(.message-user ol li::before) {
+    color: rgba(255,255,255,0.8);
+  }
+
+  :global(.message p + p) {
+    margin-top: var(--space-2);
+  }
+
+  :global(.message p + ul),
+  :global(.message ul + p) {
+    margin-top: var(--space-2);
+  }
+
+  :global(.message-ai) {
+    align-self: flex-start;
+    background: rgba(255,255,255,0.05);
+    border: var(--border-width) solid var(--border-dark);
+    color: var(--text-primary-dark);
+    border-bottom-left-radius: var(--radius-sm);
+  }
+
+  :global(.message-user) {
+    align-self: flex-end;
+    background: var(--nordic-teal);
+    border: none;
+    color: #fff;
+    border-bottom-right-radius: var(--radius-sm);
+  }
+
+  :global(.message-user p) {
+    color: #fff;
+  }
+
+  :global(.message-error) {
+    align-self: flex-start;
+    background: rgba(239, 68, 68, 0.1);
+    border: var(--border-width) solid rgba(239, 68, 68, 0.25);
+    color: #FCA5A5;
+    border-bottom-left-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+  }
+
+  /* ── Typing indicator ── */
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: var(--space-3) var(--space-5);
+    flex-shrink: 0;
+  }
+
+  .typing-indicator[hidden] {
+    display: none;
+  }
+
+  .typing-indicator span {
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-full);
+    background: var(--soft-violet);
+    opacity: 0.4;
+    animation: typing-bounce 1.2s ease-in-out infinite;
+  }
+
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typing-bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40%           { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* ── Input área ── */
+  .chat-input-area {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-top: var(--border-width) solid var(--border-dark);
+    background: rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+
+  .chat-input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: var(--border-width) solid var(--border-dark);
+    border-radius: var(--radius-md);
+    color: var(--text-primary-dark);
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-3);
+    outline: none;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                background var(--duration-fast) var(--ease-out);
+  }
+
+  .chat-input::placeholder {
+    color: var(--text-muted-dark);
+  }
+
+  .chat-input:focus {
+    border-color: rgba(29, 158, 117, 0.4);
+    background: rgba(255,255,255,0.07);
+  }
+
+  .chat-send-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-md);
+    background: var(--nordic-teal);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background var(--duration-fast) var(--ease-out),
+                transform var(--duration-fast) var(--ease-out),
+                opacity var(--duration-fast) var(--ease-out);
+  }
+
+  .chat-send-btn:hover:not(:disabled) {
+    background: var(--teal-dark, #158A63);
+    transform: scale(1.05);
+  }
+
+  .chat-send-btn:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  .chat-send-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    #chat-widget {
+      bottom: var(--space-4);
+      right: var(--space-4);
+    }
+
+    #chat-panel {
+      width: calc(100vw - 2rem);
+      right: 0;
+      bottom: 60px;
+    }
+  }
+
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    #chat-panel {
+      animation: none;
+    }
+    .typing-indicator span {
+      animation: none;
+      opacity: 0.6;
+    }
+    .status-dot {
+      animation: none;
+    }
+  }
+</style>
+
+<script define:vars={{ WEBHOOK_URL }}>
+  (() => {
+    const toggle   = document.getElementById('chat-toggle');
+    const panel    = document.getElementById('chat-panel');
+    const closeBtn = document.getElementById('chat-close');
+    const messages = document.getElementById('chat-messages');
+    const input    = document.getElementById('chat-input');
+    const sendBtn  = document.getElementById('chat-send');
+    const typing   = document.getElementById('typing-indicator');
+    const chatIcon = document.getElementById('chat-icon');
+    const closeIcon = document.getElementById('close-icon');
+
+    // ── Session ID persistente ──
+    let sessionId = localStorage.getItem('orviq_chat_session');
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      localStorage.setItem('orviq_chat_session', sessionId);
+    }
+
+    let isOpen = false;
+    let isBusy = false;
+
+    // ── Abrir / cerrar panel ──
+    function openPanel() {
+      isOpen = true;
+      panel.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      chatIcon.style.display = 'none';
+      closeIcon.style.display = '';
+      toggle.setAttribute('aria-label', 'Cerrar asistente Orviq');
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closePanel() {
+      isOpen = false;
+      panel.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      chatIcon.style.display = '';
+      closeIcon.style.display = 'none';
+      toggle.setAttribute('aria-label', 'Abrir asistente Orviq');
+    }
+
+    toggle.addEventListener('click', () => isOpen ? closePanel() : openPanel());
+    closeBtn.addEventListener('click', closePanel);
+
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) closePanel();
+    });
+
+    // ── Habilitar botón según contenido ──
+    input.addEventListener('input', () => {
+      sendBtn.disabled = input.value.trim() === '' || isBusy;
+    });
+
+    // ── Añadir mensaje al DOM ──
+    function formatMarkdown(text) {
+      const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const bold = s => s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+      const lines = text.split('\n');
+      let html = '';
+      let listType = null; // 'ul' | 'ol'
+
+      for (const raw of lines) {
+        const line = raw.trimEnd();
+
+        // Lista no ordenada: * item  o  - item
+        if (/^[\*\-] /.test(line)) {
+          if (listType !== 'ul') {
+            if (listType) html += `</${listType}>`;
+            html += '<ul>'; listType = 'ul';
+          }
+          html += `<li>${bold(esc(line.replace(/^[\*\-] /, '')))}</li>`;
+          continue;
+        }
+
+        // Lista ordenada: 1. item  2. item …
+        if (/^\d+\. /.test(line)) {
+          if (listType !== 'ol') {
+            if (listType) html += `</${listType}>`;
+            html += '<ol>'; listType = 'ol';
+          }
+          html += `<li>${bold(esc(line.replace(/^\d+\. /, '')))}</li>`;
+          continue;
+        }
+
+        if (listType) { html += `</${listType}>`; listType = null; }
+        if (line === '') continue;
+
+        html += `<p>${bold(esc(line))}</p>`;
+      }
+
+      if (listType) html += `</${listType}>`;
+      return html;
+    }
+
+    function appendMessage(text, type) {
+      const div = document.createElement('div');
+      div.className = `message message-${type}`;
+      // Solo renderiza markdown en mensajes de IA, usuario va como texto plano
+      if (type === 'ai') {
+        div.innerHTML = formatMarkdown(text);
+      } else {
+        const p = document.createElement('p');
+        p.textContent = text;
+        div.appendChild(p);
+      }
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    // ── Enviar mensaje ──
+    async function sendMessage() {
+      const text = input.value.trim();
+      if (!text || isBusy) return;
+
+      isBusy = true;
+      sendBtn.disabled = true;
+      input.value = '';
+      input.disabled = true;
+
+      appendMessage(text, 'user');
+
+      typing.hidden = false;
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, sessionId }),
+        });
+
+        typing.hidden = true;
+
+        const rawText = await res.text();
+        console.log('[Orviq Chat] status:', res.status, '| raw:', rawText);
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}: ${rawText}`);
+
+        let data;
+        try {
+          data = JSON.parse(rawText);
+        } catch {
+          throw new Error(`Respuesta no es JSON: ${rawText}`);
+        }
+
+        // n8n puede devolver array o objeto, con distintas keys
+        const item = Array.isArray(data) ? data[0] : data;
+        const reply =
+          item?.output ||
+          item?.response ||
+          item?.message ||
+          item?.text ||
+          item?.answer ||
+          item?.content ||
+          (typeof item === 'string' ? item : null);
+
+        console.log('[Orviq Chat] item:', item, '| reply:', reply);
+
+        if (reply) {
+          appendMessage(reply, 'ai');
+        } else {
+          throw new Error(`Keys disponibles: ${Object.keys(item || {}).join(', ')}`);
+        }
+      } catch (err) {
+        typing.hidden = true;
+        console.error('[Orviq Chat] ERROR:', err);
+        appendMessage(
+          'Lo siento, no he podido conectar en este momento. Puedes escribirnos a hola@orviq.com.',
+          'error'
+        );
+      } finally {
+        isBusy = false;
+        input.disabled = false;
+        input.focus();
+        sendBtn.disabled = input.value.trim() === '';
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  })();
+</script>
